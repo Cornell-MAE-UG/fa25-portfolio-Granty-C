@@ -1,74 +1,90 @@
 ---
 layout: default
-title: <Your Name> - Curriculum Vitae
+title: Grant Corso - Curriculum Vitae
 permalink: /cv/
 ---
 ## Curriculum Vitae
 
 [Download my CV]({{ "/assets/CV.pdf" | relative_url }}) in PDF format.
 
-
-**Email:** [netID@cornell.edu](mailto:netID@cornell.edu) | | | **Phone:** +123 456 7890
+**Email:** [gtc64@cornell.edu](mailto:gtc64@cornell.edu)  |  **Phone:** +1 (607) 592-9451  |  **Location:** Ithaca, New York  
 
 ---
 
 #### Objective
-Aspiring engineering student with a strong foundation in.... Passionate about ... and eager to apply my knowledge in real-world applications.
+Engineering student passionate about embedded systems, microfluidics, and mechatronics. Experienced in developing custom hardware and control systems, and eager to apply technical expertise to solve real-world challenges in automation, biotechnology, and robotics.
 
 ---
 
 #### Education
-- **Cornell University**  
-  *Bachelor of Science in Mechanical and Aerospace Engineering*  
-  GPA: 3.8/4.0 | Graduation: Month, Year
+- **Cornell University — B.S. Mechanical Engineering (in progress)**  
+  *Ithaca, NY* • 2024–2028  
+  - President, Holland International Living Center Program House — managed programming for 300+ students  
 
-- **[High School Name]**  
-  *High School Diploma*  
-  Graduation: [Month, Year]
+- **Lansing High School — High School Diploma**  
+  *Lansing, NY* • 2020–2024  
+  - Graduated at top of class (98.94 GPA)  
+  - Class President; National Honor Society President  
 
 ---
 
 #### Skills
-- **Software:** Autodesk Fusion 360, SolidWorks, ANSYS  
-- **Programming:** Python, MATLAB  
-- **Tools:** 3D Printing, Laser Cutting  
+- **Tools**  
+  SolidWorks, Autodesk Inventor, Blender, KiCad, VS Code, Video Editing  
 
----
+- **Programming**  
+  Python, C/C++, MATLAB, HTML, LaTeX, PID loops, GUI development  
 
-#### Projects
-- **[Project Title]**:  
-  *[Short Description]*  
-  - Key Achievement 1  
-  - Key Achievement 2  
+- **Embedded/EE**  
+  Custom PCB design, CAN-FD, ESP32, STM32, Raspberry Pi, Analog circuits  
 
-- **[Project Title]**:  
-  *[Short Description]*  
-  - Key Achievement 1  
-  - Key Achievement 2  
+- **Fabrication**  
+  Electronics assembly, Soldering, 3D Printing, General shop competency  
 
 ---
 
 #### Work Experience
-- **[Company Name] - Intern**  
-  [Month, Year] - [Month, Year]  
-  - Responsibility 1  
-  - Responsibility 2  
+- **IMI Norgren — Engineering Intern**  
+  *Palmer, MA* • Summer 2025  
+  - Developed closed-loop multi-PID pressure and flow control for a dual-channel pneumatic dispense pump  
+  - Designed a custom current-drive PCB for proportional valves, improving stability and precision  
+  - Applied in mass spectrometry workflows, enabling accurate, repeatable microfluidic sample delivery  
+  - Verified performance across 30–5000 µL/min with accuracy of ±0.5 µL  
+  - Now entering manufacturing  
+
+- **CyteQuest Inc. — Engineering Intern**  
+  *Ithaca, NY* • 2021–2024  
+  - Built an integrated flow-electroporation system with GMP automation, bubble mitigation, Faradaic efficiency tracking, and channel multiplexing  
+  - Designed custom machine and control software; system remains in active use for cell-therapy experiments  
+
+- **Donzi Boat Restoration — Student Engineer**  
+  *Ithaca, NY* • 2023–2024  
+  - Planned and executed full restoration of a Donzi boat: rebuilt Chevy 350 SBC to 415+ hp, restored Bravo outdrive, installed hydraulic steering and trim tabs  
+  - Designed and implemented a custom ECU PCB with protections, CAN-FD networking, and LoRa communications  
+  - Integrated mechanical, electrical, and control systems through a custom GUI dashboard  
+
+- **Autonomous Navigation Robot — Lead Developer**  
+  *Ithaca, NY* • 2022–2023  
+  - Developed a yardwork/delivery robot using GPS + digital compass achieving ~1 ft accuracy  
+  - Implemented multi-sensor fusion with outlier rejection to improve robustness against faulty readings  
+  - Reviewed by a committee of aerospace navigation engineers for error handling and reliability best practices  
 
 ---
 
-#### Achievements & Certifications
-- [Certification Name], [Issuing Organization], [Year]  
-- [Achievement Name], [Competition/Event], [Year]  
+#### Projects & Outcomes
+- **Peer Reviewed Publication:** Vander-Burgh, J.A., Corso, G.T., Levy, S.L. & H.G Craighead. *A multiplexed microfluidic continuous-flow electroporation system for efficient cell transfection.* *Biomed Microdevices 26, 10 (2024).*  
+- **Patent application:** Multiplexed microfluidic continuous-flow electroporation system for efficient cell transfection  
+- **NIH Phase II SBIR:** *“Adaptable and scalable electroporation for cellular therapy”*  
+- **Conference visibility:** CyteQuest projects featured on numerous conference posters  
 
 ---
 
-#### Extracurricular Activities
-- Member of [Club/Organization Name]  
-- Volunteer for [Event/Organization Name]  
+#### Recognitions
+- American Chemical Society Undergraduate Scholarship  
+- French Seal of Biliteracy  
+- John Philip Sousa Music Award  
 
 ---
 
 #### References
 Available upon request.
-
----
