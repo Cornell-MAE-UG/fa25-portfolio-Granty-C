@@ -1,6 +1,6 @@
 ---
 layout: project
-title: Actuated Rocker Mechanism
+title: Actuated Rocker Mechanism - HW5
 description: Designing a linear actuator mechanism with Python analysis
 technologies: [Statics, Python, PyScript]
 image: /assets/images/Actuator-Sketch.jpeg
