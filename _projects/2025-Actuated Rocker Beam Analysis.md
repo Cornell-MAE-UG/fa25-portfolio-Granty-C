@@ -3,7 +3,7 @@ layout: project
 title: Actuated Rocker Mechanism – HW12
 description: From rigid-body actuator design to a buckling-aware beam
 image: /assets/images/Beam Cross Section.jpeg
-technologies: [Statics, Python, PyScript, Beam Bending]
+technologies: [Statics, Python, PyScript]
 ---
 
 <!-- Widen content for this page -->
