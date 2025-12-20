@@ -154,9 +154,10 @@ This expression can be read almost directly as a physical statement. The heat tr
 
 <div class="hx-figure">
   <p align="center">
-  <img src="{{ 'assets\images\Heat Exchanger Diagrams.jpg' | relative_url }}"
-       alt="Heat Exchanger Diagrams"
-       style="max-width:800px; height:auto;">
+  <img
+    src="{{ '/assets/images/Heat Exchanger Diagrams.jpg' | relative_url }}"
+    alt="Heat Exchanger Diagrams"
+    style="max-width:800px; height:auto;">
   </p>
   <div class="hx-figcap">
     <b>Heat Exchanger Diagrams.</b> Control-volume diagram of the heat exchanger operating in parallel flow (left) and counterflow (right). Mass enters and exits each side of the exchanger at fixed inlet and outlet temperatures, while heat is transferred continuously along the exchanger length. In the parallel-flow configuration, the temperature difference between streams is largest near the inlet and decays rapidly downstream, leading to a strongly non-uniform heat-transfer distribution. In contrast, the counterflow configuration maintains a more uniform temperature difference along the exchanger, producing a nearly constant local heat-transfer rate and a larger effective driving force overall.
@@ -171,9 +172,10 @@ In this experiment, the exchanger hardware is fixed, so \(U\) and \(A\) are effe
 
 <div class="hx-figure">
   <p align="center">
-  <img src="{{ 'assets\images\Heat Exchanger Setup.jpg' | relative_url }}"
-       alt="Heat Exchanger Setup"
-       style="max-width:800px; height:auto;">
+  <img
+    src="{{ '/assets/images/Heat Exchanger Setup.jpg' | relative_url }}"
+    alt="Heat Exchanger Setup"
+    style="max-width:800px; height:auto;">
   </p>
   <div class="hx-figcap">
     <b>Full setup.</b> Our complete experiment setup consisted of two pumps, tubing, the heat exchanger, the source buckets, and the receiving buckets. Depending on the trial, we would re-plumb the exchanger as parallel or counter-flow, and adjust pump speed.
@@ -197,63 +199,118 @@ One thing to note that certainly affected results more than expected was the ten
 
 Below is a clean transcription of my recorded values.
 
+<style>
+  .hx-table-wrap{
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+    overflow-x: visible;
+  }
+
+  .hx-table{
+    width: min(1200px, 100%);
+    border-collapse: collapse;
+    table-layout: fixed;
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .hx-table th,
+  .hx-table td{
+    padding: .65rem .75rem;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+    font-size: 0.95rem;
+    line-height: 1.25rem;
+    overflow-wrap: anywhere;
+  }
+
+  .hx-table thead th{
+    background: #f7f8fa;
+    font-weight: 600;
+  }
+
+  .hx-table tbody tr:last-child td{ border-bottom: 0; }
+
+  .hx-table .mono{
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    white-space: nowrap;
+  }
+
+  /* column widths */
+  .hx-table th:nth-child(1), .hx-table td:nth-child(1){ width: 6%;  }
+  .hx-table th:nth-child(2), .hx-table td:nth-child(2){ width: 12%; }
+  .hx-table th:nth-child(3), .hx-table td:nth-child(3){ width: 12%; }
+  .hx-table th:nth-child(4), .hx-table td:nth-child(4){ width: 10%; }
+  .hx-table th:nth-child(5), .hx-table td:nth-child(5){ width: 10%; }
+  .hx-table th:nth-child(6), .hx-table td:nth-child(6){ width: 10%; }
+  .hx-table th:nth-child(7), .hx-table td:nth-child(7){ width: 10%; }
+  .hx-table th:nth-child(8), .hx-table td:nth-child(8){ width: 30%; }
+
+  @media (max-width: 700px){
+    .hx-table .mono{ white-space: normal; }
+  }
+</style>
+
 <div class="hx-table-wrap">
-<table class="hx-table">
-  <thead>
-    <tr>
-      <th>Trial</th>
-      <th>Configuration</th>
-      <th>Flow</th>
-      <th>Hot Inlet (°C)</th>
-      <th>Cold Inlet (°C)</th>
-      <th>Hot Outlet (°C)</th>
-      <th>Cold Outlet (°C)</th>
-      <th>Notes</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td class="mono">1</td>
-      <td>Counter</td>
-      <td>Normal</td>
-      <td class="mono">40.0</td>
-      <td class="mono">4.6</td>
-      <td class="mono">19.4</td>
-      <td class="mono">21.1</td>
-      <td>Exchanger body measured ~34.9°C</td>
-    </tr>
-    <tr>
-      <td class="mono">2</td>
-      <td>Parallel</td>
-      <td>Normal</td>
-      <td class="mono">40.0</td>
-      <td class="mono">5.9</td>
-      <td class="mono">23.5</td>
-      <td class="mono">20.0</td>
-      <td>Exchanger body noted ~33°C</td>
-    </tr>
-    <tr>
-      <td class="mono">3</td>
-      <td>Parallel</td>
-      <td>Low-flow</td>
-      <td class="mono">31.5</td>
-      <td class="mono">10.0</td>
-      <td class="mono">21.3</td>
-      <td class="mono">19.3</td>
-      <td>Low-flow: more sensitive to ambient loss + timing</td>
-    </tr>
-    <tr>
-      <td class="mono">4</td>
-      <td>Counter</td>
-      <td>Low-flow</td>
-      <td class="mono">30.0</td>
-      <td class="mono">13.2</td>
-      <td class="mono">17.9</td>
-      <td class="mono">20.1</td>
-      <td>Outlet “swap” observed (cold outlet slightly above hot outlet)</td>
-    </tr>
-  </tbody>
-</table>
+  <table class="hx-table">
+    <thead>
+      <tr>
+        <th>Trial</th>
+        <th>Configuration</th>
+        <th>Flow</th>
+        <th>Hot Inlet (°C)</th>
+        <th>Cold Inlet (°C)</th>
+        <th>Hot Outlet (°C)</th>
+        <th>Cold Outlet (°C)</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="mono">1</td>
+        <td>Counter</td>
+        <td>Normal</td>
+        <td class="mono">40.0</td>
+        <td class="mono">4.6</td>
+        <td class="mono">19.4</td>
+        <td class="mono">21.1</td>
+        <td>Exchanger body measured ~34.9°C</td>
+      </tr>
+      <tr>
+        <td class="mono">2</td>
+        <td>Parallel</td>
+        <td>Normal</td>
+        <td class="mono">40.0</td>
+        <td class="mono">5.9</td>
+        <td class="mono">23.5</td>
+        <td class="mono">20.0</td>
+        <td>Exchanger body noted ~33°C</td>
+      </tr>
+      <tr>
+        <td class="mono">3</td>
+        <td>Parallel</td>
+        <td>Low-flow</td>
+        <td class="mono">31.5</td>
+        <td class="mono">10.0</td>
+        <td class="mono">21.3</td>
+        <td class="mono">19.3</td>
+        <td>Low-flow: more sensitive to ambient loss + timing</td>
+      </tr>
+      <tr>
+        <td class="mono">4</td>
+        <td>Counter</td>
+        <td>Low-flow</td>
+        <td class="mono">30.0</td>
+        <td class="mono">13.2</td>
+        <td class="mono">17.9</td>
+        <td class="mono">20.1</td>
+        <td>Outlet “swap” observed (cold outlet slightly above hot outlet)</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 ---
@@ -446,9 +503,10 @@ So we did the fastest “engineering sanity check” we could:
 
 <div class="hx-figure">
   <p align="center">
-  <img src="{{ 'assets\images\Thermometer Testing.jpg' | relative_url }}"
-       alt="Thermometer Testing"
-       style="max-width:800px; height:auto;">
+  <img
+    src="{{ '/assets/images/Thermometer Testing.jpg' | relative_url }}"
+    alt="Thermometer Testing"
+    style="max-width:800px; height:auto;">
   </p>
   <div class="hx-figcap">
     <b>Thermometer cross-check.</b> Two thermometers reading the same fluid to verify consistency.
