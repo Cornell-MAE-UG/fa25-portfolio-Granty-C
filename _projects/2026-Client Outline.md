@@ -1,7 +1,9 @@
 ---
 layout: project
-description: Client Outline and Pitch for MAE2250 ODP
-image: assets/images/Spotted Lanternfly.jpeg
+title: Client Pitch - ODP 3
+description: Client outline and early concept proposal from The Bug Busting Crew
+image: /assets/images/Spotted Lanternfly.jpeg
+technologies: [Client Discovery, Problem Framing, Agricultural Robotics, Mechanical Design]
 fontsize: 11pt
 geometry: margin=1in
 papersize: letter
@@ -15,8 +17,9 @@ header-includes:
   - \addtolength{\topmargin}{-0.3in}
 ---
 
-# SWATR: A Scalable Robotic Lanternfly Removal Attachment
-**Team:** The Bug Busting Crew  
+## Project Brief
+
+**Team:** The Bug Busting Crew (BBC)  
 **Client(s):** Cornell CALS Extension / E&J Gallo Winery / National Grape  
 
 ## Problem statement
@@ -29,7 +32,7 @@ A robotic removal tool integrated into existing field robots would reduce labor 
 
 ## Proposed direction
 
-### Concept: **SWATR Modular Removal Arm**
+### Concept: **BBC modular removal arm**
 
 **What it is:** A lightweight, modular robotic arm with a specialized end-effector to **physically remove adult SLFs or egg masses** from surfaces, designed to mount on existing agricultural mobile robots.
 
@@ -60,8 +63,6 @@ A robotic removal tool integrated into existing field robots would reduce labor 
 3. **Would you prefer a few high-capability tools or many simpler tools distributed across the field - and what constraints drive that?**  
    *Decision affected:* System architecture (single high-performance attachment vs. scalable, low-complexity fleet).
 
-
-# References
 
 ## References
 

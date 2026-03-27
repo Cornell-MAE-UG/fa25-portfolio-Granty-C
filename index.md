@@ -6,7 +6,7 @@ title: Grant Corso
 ## About Me
 
 
-![Profile Picture]({{ "assets/images/profile-pic.jpg" | relative_url }}){: class="profile-image"}
+![Profile Picture]({{ "assets/images/profile-pic.png" | relative_url }}){: class="profile-image"}
 
  
 Hi, my name is {{ site.name }}, and I am an engineering student at Cornell University passionate about embedded systems, microfluidics, and mechatronics.  

@@ -11,10 +11,10 @@
 
 <body>
 
-  <header>
-    <nav class="navbar navbar-expand-lg navbar-dark text-white";>
-      <div class="container-fluid">
-        <a class="navbar-brand" href="{{ "/" | relative_url }}">{{ site.title }}</a>
+  <header class="site-header">
+    <nav class="navbar navbar-expand-lg navbar-dark text-white">
+      <div class="container">
+        <a class="navbar-brand site-brand" href="{{ "/" | relative_url }}">{{ site.title }}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"> 
           <span class="navbar-toggler-icon"></span>
         </button>  
@@ -36,13 +36,13 @@
   </header>
   
   
-  <main class="container">
+  <main class="site-main container">
     {{ content }}
   </main>
 
-  <footer class="footer navbar-dark text-white text-center";>
+  <footer class="site-footer navbar-dark text-white text-center">
     <div class="container">
-      &copy; 2024 {{ site.name }}. All rights not reserved.
+      &copy; {{ site.time | date: "%Y" }} {{ site.name }}. All rights not reserved.
     </div>
   </footer>
 
