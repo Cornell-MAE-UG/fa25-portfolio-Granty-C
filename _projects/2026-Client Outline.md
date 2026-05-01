@@ -4,6 +4,7 @@ title: Client Pitch - ODP 3
 description: Client outline and early concept proposal from The Bug Busting Crew
 image: /assets/images/Spotted Lanternfly.jpeg
 technologies: [Client Discovery, Problem Framing, Agricultural Robotics, Mechanical Design]
+hide_from_projects: true
 fontsize: 11pt
 geometry: margin=1in
 papersize: letter
@@ -16,6 +17,14 @@ header-includes:
   - \addtolength{\textheight}{0.6in}
   - \addtolength{\topmargin}{-0.3in}
 ---
+
+<div class="mae2250-series-bar">
+  <span class="mae2250-series-label">MAE 2250 Project Series</span>
+  <a href="{{ '/projects/2026-Rover-Compatible%20End%20Effector/' | relative_url }}">Overview</a>
+  <a href="{{ '/projects/2026-Client%20Outline/' | relative_url }}">Client Outline</a>
+  <a href="{{ '/projects/2026-Functional%20Prototype/' | relative_url }}">Functional Prototype</a>
+  <a href="{{ '/projects/2026-Client%20Report/' | relative_url }}">Client Report</a>
+</div>
 
 ## Project Brief
 

@@ -14,7 +14,7 @@ permalink: /projects/
 
 <div class="gallery-container">
   <div class="project-gallery">
-    {% assign sorted_projects = site.projects | sort: "path" | reverse %}
+    {% assign sorted_projects = site.projects | where_exp: "project", "project.hide_from_projects != true" | sort: "path" | reverse %}
     {% for project in sorted_projects %}
       <a class="gallery-item" href="{{ project.url | relative_url }}">
         <div class="gallery-media">

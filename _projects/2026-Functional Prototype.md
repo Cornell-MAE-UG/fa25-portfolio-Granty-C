@@ -4,7 +4,16 @@ title: Functional Prototype - ODP 5
 description: First functional prototype for The Bug Busting Crew's lanternfly removal end effector
 image: /assets/images/Prototype_1.jpg
 technologies: [Mechanical Design, CAD, 3D Printing, Servo Mechanisms, Prototyping, Design Testing]
+hide_from_projects: true
 ---
+
+<div class="mae2250-series-bar">
+  <span class="mae2250-series-label">MAE 2250 Project Series</span>
+  <a href="{{ '/projects/2026-Rover-Compatible%20End%20Effector/' | relative_url }}">Overview</a>
+  <a href="{{ '/projects/2026-Client%20Outline/' | relative_url }}">Client Outline</a>
+  <a href="{{ '/projects/2026-Functional%20Prototype/' | relative_url }}">Functional Prototype</a>
+  <a href="{{ '/projects/2026-Client%20Report/' | relative_url }}">Client Report</a>
+</div>
 
 <style>
   .fp-hero,
