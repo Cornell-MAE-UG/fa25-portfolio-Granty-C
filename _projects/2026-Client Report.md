@@ -261,6 +261,11 @@ hide_from_projects: true
     Friction reduction was a recurring design priority. The assembly used low-friction features, including PTFE washers, so the servos could spend
     more of their torque on useful motion instead of rubbing at the joints and collars.
   </p>
+  <p>
+    Assembly clarity was another design goal. The team mounted the servos into the chassis first, attached the printed arm links, built the guide-rod
+    and paddle subassemblies, slid the lower pivot axle through the arm bases, and then connected the upper links to the slider collars to complete
+    the motion chain. That order kept the fasteners accessible, made alignment easier, and simplified later design revisions.
+  </p>
 </div>
 
 <div class="mae2250-figure-stack mae2250-figure-stack-3">
@@ -302,6 +307,11 @@ hide_from_projects: true
     <p>
       That mattered during exhibit preparation because small geometry changes could be made without reprinting or rebuilding the entire linkage.
       Combined with PTFE washers at the rubbing interfaces, the pivot hardware improved both adjustability and friction performance.
+    </p>
+    <p>
+      In practical terms, the mostly glueless assembly process meant individual components could be swapped one at a time. That was especially useful
+      while tuning rod spacing, collar position, and servo horn alignment because the team could change one variable without disturbing the rest of
+      the mechanism.
     </p>
     <p class="mae2250-kicker">Electronics and Control</p>
     <h3>PC GUI to ESP32-S3 to I2C servo driver</h3>

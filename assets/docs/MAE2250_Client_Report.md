@@ -70,7 +70,7 @@ The same compliant gripping approach also extends beyond grabbing bugs. A gentle
 
 The concept is worth continuing. The final prototype met the major benchtop success criteria, exceeded the motion and speed targets, and demonstrated enough grip strength to justify integration work. It is not yet ready for field deployment because target acquisition and grasp planning remain open-loop and the current validation was performed in a controlled test environment.
 
-The next design cycle should prioritize three linked tasks: integrate AI vision so the gripper can detect object shape, pose, and gripping requirements in real time; package the mounting, power, and control interfaces for compatibility with existing rover platforms; and preserve the compliant mesh paddle concept while improving durability and repeatability for longer test campaigns.
+The next design cycle should prioritize three linked tasks: integrate AI vision so the gripper can detect object shape, pose, and gripping requirements in real time; package the mounting, power, and control interfaces for compatibility with existing rover platforms; and preserve the compliant mesh paddle concept while improving durability and repeatability for field testing.
 
 \newpage
 
@@ -157,7 +157,7 @@ Together, these results show that the prototype did more than barely satisfy its
 
 The mechanical design centered on a lightweight, low-friction linkage rather than a heavier linear stage. Two clamp servos produced the primary paddle motion by moving sliders along stainless rods, and a third servo shifted the pivot point vertically to create telescoping motion. The final system achieved \textbf{30 mm} of travel, exceeding the \textbf{25 mm} design goal while avoiding the mass and cost of a ball screw. Friction reduction was a recurring priority, so low-friction PTFE washers were included to ensure more servo effort went into useful motion rather than rubbing at the joints and collars.
 
-This choice of linkage was important for both cost and packaging. A servo-driven pivot shift kept the mechanism compact, visually understandable for the exhibit, and compatible with off-the-shelf parts that could be machined or assembled quickly.
+This choice of linkage was important for both cost and packaging. A servo-driven pivot shift kept the mechanism compact, visually understandable for the exhibit, and compatible with off-the-shelf parts that could be machined or assembled quickly. Assembly also stayed deliberate and accessible: the servos were mounted into the chassis first, the arm links and guide-rod subassemblies followed, and the pivot axle plus upper links were added last so the collars and fasteners stayed reachable during iteration.
 
 \begin{wrapfigure}{r}{0.34\textwidth}
 \vspace{-0.5em}
@@ -171,13 +171,13 @@ This choice of linkage was important for both cost and packaging. A servo-driven
 \vspace{-0.8em}
 \end{wrapfigure}
 
-The control stack used an ESP32-S3 devkit, a PCA9685 I2C servo driver board, and serial communication to a Python GUI on a PC. The GUI acted as both controller and visualizer, allowing the team to command paddle gap, pivot position, wrist motion, and pre-scripted demos while also viewing a live geometry model. It also supported servo trimming, savable speed limits, savable range-of-motion constraints, and built-in demos that made repeatable exhibit operation much easier.
+The control stack used an ESP32-S3 devkit, a PCA9685 I2C servo driver board, and serial communication to a Python GUI on a PC. The GUI acted as both controller and visualizer, allowing the team to command paddle gap, pivot position, wrist motion, and pre-scripted demos while also viewing a live geometry model. It also supported servo trimming plus savable speed and range limits that made repeatable exhibit operation much easier.
 
 That combination made calibration and exhibit explanation straightforward, but it also highlighted the present limitation of the system: the gripper can execute commands accurately once given a target state, yet it does not currently sense the object for itself. The pivot hardware shows another design choice that mattered during iteration: set screws and collars created a mostly glueless assembly, and PTFE washers reduced rubbing at the pivot interfaces while preserving more of the servo effort for useful motion.
 
-The paddle redesign was equally important. Rather than keep rigid flat paddles, the team used a mesh suspended with foam to introduce natural compliance into the gripping surface. That change helped the gripper hold a wider range of shapes more gently and reduced the rolling behavior seen in the earlier rigid-paddle prototype. For lanternfly removal, that compliance improves the ability to conform around fragile, irregular targets. For future agricultural or industrial use, it also makes the system more versatile when object shape, orientation, or stiffness varies from cycle to cycle.
+The paddle redesign was equally important. Rather than keep rigid flat paddles, the team used a mesh suspended with foam to introduce natural compliance into the gripping surface. That change helped the gripper hold a wider range of shapes more gently and reduced the rolling behavior seen in the earlier rigid-paddle prototype. For lanternfly removal, that compliance improves conformance around fragile, irregular targets, and for future agricultural or industrial use it broadens the range of object shapes the system can handle.
 
-Overall, the prototype demonstrates a practical path from benchtop mechanism to integrated robotic attachment. The hardware choices kept the system inexpensive and understandable, while the testing results showed enough strength, speed, and range of motion to justify future closed-loop development with AI vision and rover-level deployment. A production version that adopted name-brand and legacy-protected parts would likely raise the BOM cost, but that increase would become negligible when spread across a robotic fleet and balanced against saved crop value or reduced product damage.
+Overall, the prototype demonstrates a practical path to robotic integration: the low-cost hardware met the key strength, speed, and range targets, and although production-grade parts would raise BOM cost, that increase becomes negligible when spread across a robotic fleet and balanced against saved crop value or reduced product damage.
 
 \newpage
 
