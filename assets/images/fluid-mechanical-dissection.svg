@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Abstract flowing lines">
+  <rect width="800" height="500" fill="#e7f0ef"/>
+  <g fill="none" stroke="#5b898b" stroke-width="7" stroke-linecap="round" opacity="0.8">
+    <path d="M-30 130 C130 55 220 205 390 130 S650 55 830 130"/>
+    <path d="M-30 210 C130 135 220 285 390 210 S650 135 830 210"/>
+    <path d="M-30 290 C130 215 220 365 390 290 S650 215 830 290"/>
+    <path d="M-30 370 C130 295 220 445 390 370 S650 295 830 370"/>
+  </g>
+</svg>
