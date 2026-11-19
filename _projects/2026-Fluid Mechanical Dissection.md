@@ -6,4 +6,4 @@ image: /assets/images/fluid-mechanical-dissection.svg
 technologies: [Fluid Dynamics]
 ---
 
-Project details coming soon.
+For this project, we will take apart a lawnmower and analyze its carburetor.
