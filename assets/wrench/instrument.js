@@ -62,6 +62,7 @@
   const reset = controls.querySelector('[data-reset]');
   let viewer;
   let objectUrl;
+  let preparingViewer = false;
   function frameAssembly() {
     const aspect = viewer.clientWidth/Math.max(1,viewer.clientHeight);
     const halfLength = 25.07*0.0254/2;
@@ -86,18 +87,76 @@
   reset.addEventListener('click',()=>{
     rest();frameAssembly();
   });
-  button.addEventListener('click',async()=>{
-    button.disabled=true;button.textContent='Loading model…';status.textContent='';
+  function isExploring() {
+    return button.getAttribute('aria-expanded') === 'true';
+  }
+
+  function showView(expanded, message = '') {
+    const ready = Boolean(viewer && viewer.loaded);
+    button.setAttribute('aria-expanded', String(expanded));
+    button.textContent = expanded ? 'Back to cover image' : 'Explore in 3D';
+    fallback.hidden = expanded && Boolean(viewer);
+    controls.hidden = !expanded || !ready;
+    if (viewer) viewer.hidden = !expanded;
+
+    if (expanded && ready) {
+      frameAssembly();
+      animate.hidden = !viewer.availableAnimations.length;
+      status.textContent = 'Drag to rotate. Scroll or pinch to zoom.';
+    } else if (expanded) {
+      status.textContent = 'Loading model…';
+    } else {
+      if (ready) rest();
+      status.textContent = message;
+    }
+  }
+
+  function handleViewerError() {
+    const message = isExploring() ? 'The 3D model could not load. Select Explore in 3D to retry.' : '';
+    if (viewer) viewer.remove();
+    viewer = null;
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    objectUrl = null;
+    button.removeAttribute('aria-controls');
+    showView(false, message);
+  }
+
+  async function loadViewerLibrary() {
+    if (customElements.get('model-viewer')) return;
+    const embeddedLibrary = document.getElementById('wrench-viewer-library');
+    if (!embeddedLibrary) {
+      await import(frame.dataset.library);
+      return;
+    }
+    const bytes = Uint8Array.from(atob(embeddedLibrary.textContent.trim()), c => c.charCodeAt(0));
+    const libraryUrl = URL.createObjectURL(new Blob([bytes], {type: 'text/javascript'}));
     try {
-      const embeddedLibrary=document.getElementById('wrench-viewer-library');
-      if (embeddedLibrary) {
-        const bytes=Uint8Array.from(atob(embeddedLibrary.textContent.trim()),c=>c.charCodeAt(0));
-        const libraryUrl=URL.createObjectURL(new Blob([bytes],{type:'text/javascript'}));
-        try {await import(libraryUrl);} finally {URL.revokeObjectURL(libraryUrl);}
-      } else {
-        await import(frame.dataset.library);
-      }
+      await import(libraryUrl);
+    } finally {
+      URL.revokeObjectURL(libraryUrl);
+    }
+  }
+
+  frame.closest('figure').addEventListener('keydown', event => {
+    if (event.key === 'Escape' && isExploring()) {
+      event.preventDefault();
+      showView(false);
+      button.focus({preventScroll: true});
+    }
+  });
+
+  button.addEventListener('click', async () => {
+    const expanded = !isExploring();
+    showView(expanded);
+    if (!expanded || viewer || preparingViewer) return;
+
+    preparingViewer = true;
+    try {
+      await loadViewerLibrary();
+      if (!isExploring()) return;
       viewer=document.createElement('model-viewer');
+      viewer.id = 'wrench-interactive-model';
+      button.setAttribute('aria-controls', viewer.id);
       viewer.alt='Assembled beam torque wrench, with a square drive, reference pointer and transverse scale';
       viewer.setAttribute('camera-controls','');viewer.setAttribute('touch-action','pan-y');
       viewer.setAttribute('camera-orbit',frame.dataset.orbit+' auto');
@@ -106,16 +165,10 @@
       viewer.setAttribute('field-of-view','29deg');viewer.setAttribute('min-field-of-view','5deg');
       viewer.setAttribute('max-field-of-view','50deg');viewer.setAttribute('shadow-intensity','0');
       viewer.setAttribute('exposure','1.12');viewer.setAttribute('interaction-prompt','none');
-      viewer.addEventListener('load',()=>{
-        fallback.hidden=true;button.hidden=true;controls.hidden=false;
-        frameAssembly();
-        animate.hidden=!viewer.availableAnimations.length;
-        status.textContent='Drag to rotate. Scroll or pinch to zoom.';
+      viewer.addEventListener('load', () => {
+        if (isExploring()) showView(true);
       });
-      viewer.addEventListener('error',()=>{
-        viewer.remove();fallback.hidden=false;button.hidden=false;button.disabled=false;
-        button.textContent='Retry 3D view';status.textContent='The 3D view could not load. The dimensioned views and STEP download are available below.';
-      });
+      viewer.addEventListener('error', handleViewerError);
       // A local HTML export can optionally embed the model for opening offline.
       const embedded=document.getElementById('wrench-model-bytes');
       if (embedded) {
@@ -123,10 +176,12 @@
         objectUrl=URL.createObjectURL(new Blob([bytes],{type:'model/gltf-binary'}));
       }
       viewer.src=objectUrl||frame.dataset.model;
-      fallback.hidden=true;frame.prepend(viewer);
+      frame.prepend(viewer);
+      showView(true);
     } catch {
-      button.disabled=false;button.textContent='Retry 3D view';
-      status.textContent='The 3D viewer is unavailable here. The CAD views and STEP download remain accessible.';
+      handleViewerError();
+    } finally {
+      preparingViewer = false;
     }
   });
 })();
