@@ -12,6 +12,9 @@ imagealt: CAD drawing of the curved scale and pointer on the indicating wrench
   html:has(.wrench-study) { scroll-behavior: auto; }
   .wrench-study .section { padding-block: clamp(1.6rem, 3.4vw, 2.55rem); }
   .wrench-study .formula { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .25rem 1.15rem; margin: .8rem 0 1rem; }
+  .wrench-study .worked-math { gap: .8rem 1.4rem; line-height: 1.48; }
+  .wrench-study .worked-math .math-label { display: block; margin-bottom: .12rem; font: 650 .875rem/1.4 system-ui, sans-serif; color: #365447; }
+  .wrench-study .calculation-step { display: block; }
   .wrench-study .comparison { margin: .8rem 0 1.25rem; }
   .wrench-study .comparison p { margin: 0; }
   .wrench-study .miss { color: #8a381e; font-weight: 700; }
@@ -26,6 +29,8 @@ imagealt: CAD drawing of the curved scale and pointer on the indicating wrench
   .wrench-study .instrument > img, .wrench-study .instrument > svg { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; }
   .wrench-study .viewer-frame { min-height: 0; }
   .wrench-study .viewer-frame .poster { max-height: 320px; }
+  .wrench-study #assembly { scroll-margin-top: 1rem; }
+  .wrench-study [data-open][aria-expanded="true"] { top: .8rem; right: .8rem; bottom: auto; z-index: 1; background: #f5f8f3; color: #16483d; border-color: #80998b; }
   .wrench-study .downloads { margin-bottom: 1.2rem; }
   @media (max-width: 760px) {
     .wrench-study .formula { grid-template-columns: 1fr; }
@@ -52,18 +57,20 @@ imagealt: CAD drawing of the curved scale and pointer on the indicating wrench
 
   <section class="section" id="baseline">
     <h2>Baseline calculations</h2>
-    <p>The M42 steel beam has a 16.0 in lever arm, a 0.500 in thickness (b), and a 0.450 in width in the bending plane (h). Its elastic modulus is 32.0 Mpsi.</p>
-    <div class="formula" aria-label="Cantilever calculations at 600 inch-pounds">
-      <span>F = T/L = 37.50 lbf</span><span>I = bh³/12 = 0.003797 in⁴</span>
-      <span>σ = Th/(2I) = 35.56 ksi</span><span>δ = FL³/(3EI) = 0.4214 in</span>
+    <p>I modeled the course’s M42 steel wrench as a cantilever with an end load. The lever arm L is 16.0 in, thickness b is 0.500 in, bending width h is 0.450 in, and elastic modulus E is 32.0 × 10⁶ psi.</p>
+    <div class="formula worked-math" aria-label="Cantilever calculations at 600 inch-pounds">
+      <div><span class="math-label">End force</span>F = T/L = 600/16.0 = <strong>37.50 lbf</strong></div>
+      <div><span class="math-label">Second moment of area</span>I = bh³/12 = 0.500(0.450)³/12 = <strong>0.00379688 in⁴</strong></div>
+      <div><span class="math-label">Outer-fiber bending stress</span>σ = T(h/2)/I<span class="calculation-step">= 600(0.225)/0.00379688 = 35,556 psi = <strong>35.56 ksi</strong></span></div>
+      <div><span class="math-label">Load-point deflection</span>δ = FL³/(3EI)<span class="calculation-step">= 37.50(16.0)³ / [3(32.0 × 10⁶)(0.00379688)] = <strong>0.4214 in</strong></span></div>
     </div>
     <div class="table-wrap"><table aria-label="Baseline hand and finite element results"><thead><tr><th scope="col">At +600 in·lbf</th><th scope="col">Hand</th><th scope="col">Ansys FEM</th></tr></thead><tbody>
       <tr><th scope="row">Maximum tensile normal stress (σ₁)</th><td>35.56 ksi</td><td>113.40 ksi</td></tr>
       <tr><th scope="row">Load-point deflection</th><td>0.4214 in</td><td>0.4688 in</td></tr>
     </tbody></table></div>
     <div class="columns comparison">
-      <p><strong>Why stress differs.</strong> In Ansys I fixed the upper 0.400 in of the drive and loaded the end face. Stress concentrates at the fixed edge, reaching 3.19 times the nominal beam stress.</p>
-      <p><strong>Why deflection differs.</strong> Ansys predicts 11.2% more travel because the head and exposed drive can rotate. The hand model fixes the beam at its root.</p>
+      <p><strong>Why stress differs.</strong> In Ansys I fixed the upper 0.400 in of the drive and loaded the end face. Stress concentrates at the fixed edge, giving 113.40/35.56 = <strong>3.19 times</strong> the nominal beam stress.</p>
+      <p><strong>Why deflection differs.</strong> The head and exposed drive can rotate in the solid model. That adds 0.4688 − 0.4214 = <strong>0.0474 in</strong> of travel (11.2%) compared with the hand model’s perfectly fixed root.</p>
     </div>
     <h3>Baseline safety factors</h3>
     <div class="table-wrap"><table aria-label="Baseline hand safety factors"><thead><tr><th scope="col">Failure mode</th><th scope="col">Hand calculation</th><th scope="col">Minimum</th></tr></thead><tbody>
@@ -80,15 +87,23 @@ imagealt: CAD drawing of the curved scale and pointer on the indicating wrench
       <figure class="fig"><a href="{{ w }}/dimensioned-model.svg"><img loading="lazy" width="1632" height="1056" src="{{ w }}/dimensioned-model.svg" alt="Dimensioned plan, elevation and drive detail showing the 22-inch lever, working section, grip and fillet radii."></a><figcaption><strong>Wrench body.</strong> Increasing the drive fillet from 0.080 to 0.100 in reduced trial peak tension by 12%.</figcaption></figure>
       <figure class="fig"><a href="{{ w }}/indicator-layout.svg"><img loading="lazy" width="1632" height="1056" src="{{ w }}/indicator-layout.svg" alt="Dimensioned CAD views of the pointer, clearance, graduated arc and rated-load position."></a><figcaption><strong>Indicator assembly.</strong> Pointer clearance and curved scale dimensions, in inches.</figcaption></figure>
     </div>
-    <p><strong>Design iteration.</strong> The 0.300 in trial beam missed the fracture target (1.93). The final profile gives 1.450 in of travel at 52.66 ksi by hand. Its safety factors are 4.18 for yield, 2.94 for fracture and 2.35 for fatigue. <a href="{{ w }}/wrench-drawings.pdf">Full-size CAD drawings (PDF)</a></p>
+    <p class="small"><a href="{{ w }}/wrench-drawings.pdf">Full-size CAD drawings (PDF)</a> · <a href="#assembly">View the 3D assembly</a></p>
     <h3 class="subhead">Custom 465 stainless steel · H950</h3>
-    <p>I chose H950 for its fracture toughness of <strong>61.4 ksi√in</strong>, compared with 15 ksi√in for M42.</p>
+    <p>I chose H950 for its fracture toughness of <strong>61.4 ksi√in</strong>. At the same stress and crack size, that gives 61.4/15 = <strong>4.09 times</strong> the fracture margin of M42. Changing the steel alone brought the original grip travel to only 0.470 in, so I also changed the section.</p>
     <p class="properties"><strong>Material inputs.</strong> E = 28.7 Mpsi, ν = 0.28, yield = 220 ksi, ultimate = 240 ksi. The fatigue strength is 124 ksi at 100,000 fully reversed cycles (R = −1).</p>
+    <h3 class="subhead">Sizing the flexure by hand</h3>
+    <p>For a rectangular beam at fixed torque, σ = 6T/(bh²) and δ = 4TL²/(Ebh³). Narrowing the beam increases travel faster than stress. The 0.300 in trial gave 2.998 in of travel, but its fracture factor fell to 1.93. I chose a 0.360 in working width with rounded transitions.</p>
+    <p>For the final profile I used the local section inertia I(x) and bending moment M(x) from the distributed grip load. Integrating curvature to the grip center at x = 22 in gives the deflection.</p>
+    <div class="formula worked-math" aria-label="Hand results for the final variable-width beam">
+      <div><span class="math-label">Peak nominal bending stress</span>σ<sub>max</sub> = max [M(x)h(x)/(2I(x))]<span class="calculation-step">= <strong>52.66 ksi</strong> at x = 2.055 in</span></div>
+      <div><span class="math-label">Grip-center deflection</span>δ(22) = ∫<sub>0</sub><sup>22</sup> (22 − x) M(x)/[E I(x)] dx<span class="calculation-step">= <strong>1.450 in</strong></span></div>
+    </div>
+    <p>At that bending stress, the hand safety factors are <strong>4.18</strong> for yield, <strong>2.94</strong> for fracture and <strong>2.35</strong> for fatigue.</p>
   </section>
 
   <section class="section" id="simulation">
     <h2>Final finite element results</h2>
-    <p>In Ansys, a lateral <strong>27.27 lbf</strong> load spread over the grip at a mean radius of <strong>22.00 in</strong> produces 600 in·lbf. I compared two supports on the upper 0.400 in of the drive.</p>
+    <p>I applied <strong>F = T/L = 600/22.00 = 27.27 lbf</strong> laterally over the 1.520 in² grip face, giving a uniform traction of <strong>17.94 psi</strong>. In the fixed-drive model, the upper 0.400 in of the drive cannot move. In the socket model, each flat can push against the socket or lift away as the torque reverses.</p>
     <div class="columns figure-pair">
       <figure class="fig"><a href="{{ w }}/load-setup.png"><img loading="lazy" width="2040" height="1190" src="{{ w }}/load-setup.png" alt="CAD load diagram marking the loaded grip patch and support on the upper part of the square drive."></a><figcaption><strong>Loads and supports.</strong> The drive flats are either fixed or supported by compression-only socket contact.</figcaption></figure>
       <figure class="fig"><a href="{{ w }}/final-stress.png"><img loading="lazy" width="2040" height="1181" src="{{ w }}/final-stress.png" alt="Maximum principal tensile stress contour in ksi with a magnified view of the hot spot near the square drive."></a><figcaption><strong>Maximum normal stress.</strong> The socket model peaks at the square drive at +600 in·lbf.</figcaption></figure>
@@ -98,20 +113,22 @@ imagealt: CAD drawing of the curved scale and pointer on the indicating wrench
       <tr><th scope="row">Load-point deflection relative to socket</th><td>1.5062 in</td><td><strong>1.6545 in</strong></td></tr>
       <tr><th scope="row">Load-point deflection relative to head</th><td>1.4549 in</td><td><strong>1.4549 in</strong></td></tr>
     </tbody></table></div>
+    <p>The socket model includes the head’s rigid motion. Removing its contribution at the grip gives <strong>1.65446 − 0.19953 = 1.45493 in</strong> of bending travel. That is 0.35% above the variable-section hand calculation.</p>
     <h3 class="subhead" id="safety">Final safety factors and travel</h3>
+    <p>I used the larger peak from the two torque directions for yield and fracture. For fatigue, I took half the difference between the two stress tensors at each node. The largest normal stress amplitude was <strong>65.55 ksi</strong>.</p>
     <div class="table-wrap"><table aria-label="Final design checks at both torque limits"><thead><tr><th scope="col">Check at ±600 in·lbf</th><th scope="col">Socket model</th><th scope="col">Minimum</th></tr></thead><tbody>
       <tr><th scope="row">Grip travel relative to head</th><td><strong>1.455 in</strong></td><td>1.00 in</td></tr>
-      <tr><th scope="row">Yield (von Mises)</th><td>220 / 93.19 = <strong>2.36</strong></td><td>2.00</td></tr>
-      <tr><th scope="row">Fracture, 0.040 in edge crack</th><td>61.4 / [1.12(68.81)√(π × 0.040)] = <strong>2.25</strong></td><td>2.00</td></tr>
-      <tr><th scope="row">Fatigue, 100,000 fully reversed cycles</th><td>124 / 65.55 = <strong>1.89</strong></td><td>1.50</td></tr>
+      <tr><th scope="row">Yield (von Mises)</th><td>n<sub>y</sub> = S<sub>y</sub>/σ<sub>vM</sub> = 220 / 93.19 = <strong>2.36</strong></td><td>2.00</td></tr>
+      <tr><th scope="row">Fracture, 0.040 in edge crack</th><td>K<sub>I</sub> = 1.12σ₁√(πa) = 1.12(68.81)√(π × 0.040) = 27.32 ksi√in<span class="calculation-step">n<sub>K</sub> = K<sub>IC</sub>/K<sub>I</sub> = 61.4 / 27.32 = <strong>2.25</strong></span></td><td>2.00</td></tr>
+      <tr><th scope="row">Fatigue, 100,000 fully reversed cycles</th><td>n<sub>f</sub> = S<sub>f</sub>/σ<sub>a</sub> = 124 / 65.55 = <strong>1.89</strong></td><td>1.50</td></tr>
     </tbody></table></div>
     <p class="status-note"><strong class="met">The socket model meets all four course targets.</strong> With the drive faces fixed, the peak stress rises as the mesh is refined. That model gives 1.32 for yield and 0.89 for fracture. An extra fatigue check for the peened drive including mean stress gives 1.48 against 1.50, so I would test the drive in a real socket before rating it.</p>
-    <p><strong>Predicted scale sensitivity.</strong> At 600 in·lbf, the tip travels 1.136 in across the scale, or <strong>0.001894 in per in·lbf</strong> on average. It also shifts 0.130 in toward the head, so the graduations follow a 5.040 in radius arc.</p>
+    <p><strong>Predicted scale sensitivity.</strong> The pointer travels 1.1362 in across the scale from zero to +600 in·lbf. Its average sensitivity is <strong>Δs/ΔT = 1.1362/600 = 0.001894 in per in·lbf</strong>, about 0.095 in per 50 in·lbf tick. The tip also moves 0.130 in toward the head, so the graduations follow a 5.040 in radius arc.</p>
   </section>
 
   <section id="cost" class="section">
     <h2>Weight, cost and manufacture</h2>
-    <p><strong>2.080 lb assembled · $7.92 USD in finished metal.</strong> The starting steel blank costs about $34.77 before machining, heat treatment and calibration.</p>
+    <p><strong>2.080 lb assembled · $7.92 USD in finished metal.</strong> I multiplied each CAD volume by its density. For the H950 body, 6.9944 in³ × 0.2829 lb/in³ = 1.979 lb. At $3.855/lb the body costs $7.63. The 304 tube adds $0.20 and the aluminum parts add $0.09. Buying the starting steel blank alone costs about $34.77 before machining, heat treatment and calibration.</p>
     <p><strong>Machinability.</strong> Aged H950 cuts slowly (Granta reference speed 22 surface ft/min). I’d rough-machine the annealed blank, age it, then finish and peen the drive.</p>
     <p><strong>Recycling and corrosion.</strong> The H950 body and 304 tube are recyclable once separated from the aluminum indicator parts. H950 resists fresh water well. Granta lists seawater service as restricted.</p>
   </section>
@@ -141,10 +158,10 @@ imagealt: CAD drawing of the curved scale and pointer on the indicating wrench
         <label class="reference-toggle"><input type="checkbox" data-guide> Show straight reference line</label></div>
       </div>
     </div>
-    <figure class="fig">
+    <figure class="fig" id="assembly">
       <div class="viewer-frame" data-viewer data-model="{{ w }}/indicating-wrench.glb" data-library="{{ w }}/model-viewer.min.js" data-orbit="-16deg 141deg">
         <img class="poster" width="1560" height="490" src="{{ w }}/assembly-isometric.svg" alt="Isometric CAD view of the complete wrench with its reference tube above the beam and graduated plate at the grip.">
-        <button type="button" class="button start-view" data-open>Explore in 3D</button><span role="status" class="viewer-status"></span>
+        <button type="button" class="button start-view" data-open aria-expanded="false">Explore in 3D</button><span role="status" class="viewer-status"></span>
       </div>
       <div data-model-tools hidden><button type="button" class="tool-button" data-play aria-pressed="false">Play load cycle</button> <button type="button" class="tool-button" data-reset>Reset view</button></div>
       <figcaption><strong>Complete CAD assembly.</strong> Rotate the wrench or play a load cycle.</figcaption>
