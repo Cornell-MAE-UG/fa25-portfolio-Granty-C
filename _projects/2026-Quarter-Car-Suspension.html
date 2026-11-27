@@ -2,229 +2,1714 @@
 layout: default
 title: Quarter-Car Suspension
 permalink: /projects/quarter-car-suspension/
-description: Compare coil and air suspension over a road bump and across driving frequencies. Explore ride comfort, suspension travel, and tire contact in a two-mass model.
+description: A digital MAE 3260 report comparing coil and sealed air suspension through state-space modeling, Bode plots, and interactive simulation.
 image: /assets/suspension/cover.webp
 ---
 {% assign car = '/assets/suspension' | relative_url %}
 <link rel="stylesheet" href="{{ car }}/study.css">
+<style>
+  .qcar .q-hero .q-course { max-width: 100%; }
+  .qcar .q-project-title { font-weight: 650; max-width: 31ch; }
+  .qcar .q-report-copy { max-width: 82ch; }
+  .qcar .q-report-copy:last-child { margin-bottom: 0; }
+  .qcar .q-report-nav { padding-block: 1.15rem; }
+  .qcar .q-report-intro { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); gap: clamp(1rem, 4vw, 3rem); }
+  .qcar .q-report-intro h3 { margin-top: .12rem; }
+  .qcar .q-report-intro h3:not(:first-child) { margin-top: 1.1rem; }
+  .qcar .q-report-subheading { margin-top: 1.4rem; }
+  .qcar .q-report-figure { max-width: 820px; margin: 1.25rem auto; scroll-margin-top: 1.25rem; }
+  .qcar .q-report-figure > a { display: block; }
+  .qcar .q-report-figure figcaption strong { color: var(--q-ink); }
+  .qcar .q-report-equation { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .6rem; border: 1px solid #dce8e1; background: #edf3ee; padding: .72rem .85rem; margin: .8rem 0 1rem; border-radius: 7px; scroll-margin-top: 1.25rem; }
+  .qcar .q-equation-formulas { min-width: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; justify-content: safe center; gap: .35rem 1.55rem; overflow-x: auto; overflow-y: hidden; padding: .26rem .1rem; }
+  .qcar .q-equation-formulas math { margin: 0; font-size: 1.08rem; flex: 0 0 auto; }
+  .qcar .q-equation-formulas .q-narrow-math { display: none; }
+  .qcar .q-equation-number { font-size: .87rem; color: var(--q-muted); font-variant-numeric: tabular-nums; }
+  .qcar .q-report-table-figure { margin: .95rem 0 1.3rem; scroll-margin-top: 1.25rem; }
+  .qcar .q-report-table-figure figcaption { font-size: .9rem; color: var(--q-muted); padding: .1rem 0 .5rem; }
+  .qcar .q-report-table-box { overflow-x: auto; border-radius: 8px; }
+  .qcar .q-report-table-box:focus-visible { outline: 2px solid var(--q-pine); outline-offset: 3px; }
+  .qcar .q-report-table { border-collapse: collapse; width: 100%; font-size: .91rem; line-height: 1.45; margin: 0; background: #fff; border: 1px solid var(--q-line); }
+  .qcar .q-report-table thead { background: #dceae4; }
+  .qcar .q-report-table :is(th, td) { padding: .62rem .7rem; border-bottom: 1px solid #dce6e2; vertical-align: middle; text-align: left; font-variant-numeric: tabular-nums; }
+  .qcar .q-report-table tbody tr:nth-child(even) { background: #f4f8f6; }
+  .qcar .q-report-table th[scope="row"] { font-weight: 600; }
+  .qcar .q-report-table small { display: block; color: var(--q-muted); font-size: .84em; font-weight: 500; }
+  .qcar .q-report-table.q-wide-table { min-width: 32rem; }
+  .qcar .q-report-table.q-baseline-table td { white-space: nowrap; }
+  .qcar .q-report-table.q-baseline-table :is(th, td):first-child { width: 55%; }
+  .qcar .q-embedded-lab { margin-top: 1.65rem; scroll-margin-top: 1.25rem; }
+  .qcar .q-inline-ref { font-size: .91em; white-space: nowrap; }
+  .qcar .q-references { padding-left: 1.55rem; max-width: 83ch; }
+  .qcar .q-references li { padding: .34rem 0 .34rem .2rem; scroll-margin-top: 1.25rem; }
+  @media (max-width: 625px) {
+    .qcar .q-report-intro { grid-template-columns: 1fr; gap: .4rem; }
+    .qcar .q-report-equation { padding: .55rem .5rem; gap: .35rem; }
+    .qcar .q-equation-formulas math { font-size: 1rem; }
+    .qcar .q-report-table :is(th, td) { padding: .55rem .42rem; font-size: .88rem; }
+    .qcar .q-report-table.q-baseline-table :is(th, td):first-child { width: 48%; }
+  }
+  @media (max-width: 425px) {
+    .qcar .q-equation-formulas .q-wide-math { display: none; }
+    .qcar .q-equation-formulas .q-narrow-math { display: block; }
+  }
+</style>
+
 <article class="qcar" data-quarter-car>
   <div class="q-hero">
     <div class="q-hero-copy">
-      <p class="q-course">MAE 3260 · System Dynamics</p>
+      <p class="q-course">MAE 3260 · System Dynamics · Fall&nbsp;2026</p>
       <h1>Quarter-car suspension</h1>
-      <p>Can a softer spring smooth out the ride and still keep the tire loaded? Compare a coil and a sealed air spring in the same quarter-car model.</p>
-      <div class="q-hero-actions"><a class="q-button q-primary" href="#simulator">Run the bump</a><a href="#frequency">Explore frequencies</a></div>
+      <p class="q-project-title">Life Has Its Ups and Downs.<br>So Does Your Car.</p>
+      <p>A report on how coil and sealed air springs affect ride comfort, suspension travel, and tire contact.</p>
+      <div class="q-hero-actions">
+        <a class="q-button q-primary" href="#abstract">Read the report</a>
+        <a href="#simulator">Run the bump</a>
+      </div>
     </div>
     <img src="{{ car }}/cover.webp" width="1788" height="1163" alt="Quarter-car schematic beside simulated body motion traces for coil and air springs.">
   </div>
 
-  <p class="q-baseline-label">Air spring compared with the coil on a 50 mm bump crossed in 0.20 s</p>
-  <dl class="q-highlights" aria-label="Baseline comparison">
-    <div><dt>Lower RMS body acceleration</dt><dd>9.3%</dd></div>
-    <div><dt>Shorter body settling time</dt><dd>0.42 s</dd></div>
-    <div><dt>Lower minimum tire load</dt><dd>0.151 kN</dd></div>
-  </dl>
-
-  <nav class="q-nav" aria-label="Project sections">
-    <a href="#simulator">Bump simulator</a><a href="#frequency">Frequency explorer</a><a href="#model">Model</a><a href="#results">Findings</a><a href="#reproduce">Code and sources</a>
+  <nav class="q-nav q-report-nav" aria-label="Report contents">
+    <a href="#abstract">Abstract</a>
+    <a href="#model">Mechanical model</a>
+    <a href="#state-space">State space</a>
+    <a href="#air-spring">Air spring</a>
+    <a href="#frequency">Frequency response</a>
+    <a href="#bump-response">Road bump</a>
+    <a href="#results">Parameter effects</a>
+    <a href="#references">References</a>
   </nav>
 
-  <section class="q-section" id="simulator">
-    <div class="q-section-title">
-      <h2>Road bump simulator</h2>
-      <p>Both cars cross the same bump with the same damping. Change either spring and compare what reaches the body and how much load remains on the tire.</p>
-    </div>
-    <noscript><p>Enable JavaScript to run the simulator. The model, baseline results, and Python code are below.</p></noscript>
-    <div class="q-lab" data-lab hidden>
-      <div class="q-case-row">
-        <label for="q-case">Test case
-          <select id="q-case" data-case>
-            <option value="baseline" selected>Baseline bump</option>
-            <option value="soft">Softer air spring</option>
-            <option value="damped">More damping</option>
-            <option value="large">Larger bump</option>
-            <option value="custom" disabled>Custom settings</option>
-          </select>
-        </label>
+  <section class="q-section" id="abstract">
+    <div class="q-report-intro">
+      <div>
+        <h2>Abstract</h2>
+        <p class="q-report-copy">We compared a coil spring and a sealed air spring in a model of one corner of a car. We modeled the body and wheel masses separately, linearized the air spring at ride height, and compared the two systems with Bode plots and Python simulations. On a 50&nbsp;mm bump crossed in 0.20&nbsp;s, air lowered RMS body acceleration from 1.113 to 1.009&nbsp;m/s² and settled 0.42&nbsp;s sooner. It also used 1.27&nbsp;mm more suspension travel and lowered minimum tire load by 0.151&nbsp;kN. Spring settings and road frequency changed the tradeoff.</p>
       </div>
-      <div class="q-controls">
-        <label for="q-height">Bump height <output for="q-height" data-value="height">50 mm</output>
-          <input type="range" id="q-height" data-option="height" min="10" max="85" value="50" step="1">
-        </label>
-        <label for="q-duration">Crossing time <output for="q-duration" data-value="duration">0.20 s</output>
-          <input type="range" id="q-duration" data-option="duration" min="0.12" max="0.55" value="0.20" step="0.01">
-        </label>
-        <label for="q-damping">Damping <output for="q-damping" data-value="damping">1,000 N·s/m</output>
-          <input type="range" id="q-damping" data-option="damping" min="600" max="2200" value="1000" step="10">
-        </label>
-        <label for="q-coil">Coil rate <output for="q-coil" data-value="coilRate">16.00 kN/m</output>
-          <input type="range" id="q-coil" data-option="coilRate" min="12" max="20" value="16" step="0.25">
-        </label>
-        <label for="q-volume">Air volume <output for="q-volume" data-value="volume">7.50 L</output>
-          <input type="range" id="q-volume" data-option="volume" min="4.2" max="12" value="7.5" step="any">
-        </label>
+      <div>
+        <h3>My contribution</h3>
+        <p>I focused on Python simulation, comparing the body and tire responses, and making the result interactive. Our group also developed the coil model and the air spring linearization.</p>
+        <h3>MAE 3260 methods</h3>
+        <p>Force balances and state space, Taylor linearization, transfer functions and Bode plots, and time-domain simulation with parameter sweeps.</p>
       </div>
-      <div class="q-tools">
-        <button class="q-button" type="button" data-match>Match coil rate</button>
-        <button class="q-button" type="button" data-reset>Reset settings</button>
-        <label class="q-check"><input type="checkbox" data-linear> Show linear air</label>
-        <span class="q-rate" data-rate>Air tangent rate 11.60 kN/m</span>
-      </div>
-
-      <div class="q-stage">
-        <div class="q-motion">
-          <h3>Quarter-car motion</h3>
-          <canvas data-motion role="img" aria-label="Animated comparison of two quarter-car models. Body, wheel, and road motion are drawn to an exaggerated scale."></canvas>
-          <div class="q-motion-readings" aria-label="Current body displacement">
-            <span>Coil <strong data-reading="coil">0.0 mm</strong></span>
-            <span>Air <strong data-reading="air">0.0 mm</strong></span>
-          </div>
-          <p class="q-note">Body displacement. Motion is exaggerated.</p>
-        </div>
-        <div class="q-trace">
-          <div class="q-trace-tools">
-            <label for="q-signal">Plot
-              <select id="q-signal" data-signal>
-                <option value="body">Body displacement</option>
-                <option value="acceleration">Body acceleration</option>
-                <option value="compression">Suspension compression</option>
-                <option value="tireLoad">Total tire load</option>
-              </select>
-            </label>
-            <label for="q-horizon">Window
-              <select id="q-horizon" data-horizon>
-                <option value="1">1 s</option><option value="3.5" selected>3.5 s</option><option value="6">6 s</option>
-              </select>
-            </label>
-          </div>
-          <canvas data-plot role="img" aria-label="Time series of coil and air suspension response."></canvas>
-          <div class="q-legend" aria-label="Plot legend">
-            <span class="q-key q-coil">Coil</span><span class="q-key q-air">Nonlinear air</span>
-            <span class="q-key q-tangent" data-linear-key hidden>Linear air</span>
-            <span class="q-key q-road" data-road-key>Road input</span>
-          </div>
-        </div>
-      </div>
-      <div class="q-timeline">
-        <button class="q-button q-primary" type="button" data-play>Play</button>
-        <label for="q-time">Playback time</label>
-        <input type="range" id="q-time" data-time min="0" max="3.5" value="0" step="0.001">
-        <output for="q-time" data-clock aria-live="off">0.00 s</output>
-        <button class="q-button" type="button" data-export>Download trace CSV</button>
-      </div>
-      <p class="q-contact" role="status" data-contact></p>
-      <table class="q-metrics" aria-label="Comparison for the current bump over the full simulation">
-        <thead><tr><th scope="col">Full-run metric</th><th scope="col">Coil</th><th scope="col">Air</th><th scope="col">Air − coil</th></tr></thead>
-        <tbody>
-          <tr><th scope="row">Peak body displacement</th><td data-coil="bodyPeak">28.50 mm</td><td data-air="bodyPeak">26.08 mm</td><td data-diff="bodyPeak">−2.42 mm</td></tr>
-          <tr><th scope="row">Peak body acceleration</th><td data-coil="accelPeak">4.90 m/s²</td><td data-air="accelPeak">4.61 m/s²</td><td data-diff="accelPeak">−0.29 m/s²</td></tr>
-          <tr><th scope="row">RMS body acceleration</th><td data-coil="accelRMS">1.113 m/s²</td><td data-air="accelRMS">1.009 m/s²</td><td data-diff="accelRMS">−0.104 m/s²</td></tr>
-          <tr><th scope="row">Peak suspension travel</th><td data-coil="travel">49.89 mm</td><td data-air="travel">51.16 mm</td><td data-diff="travel">+1.27 mm</td></tr>
-          <tr><th scope="row">Minimum total tire load</th><td data-coil="minLoad">1.116 kN</td><td data-air="minLoad">0.965 kN</td><td data-diff="minLoad">−0.151 kN</td></tr>
-          <tr><th scope="row">Settling after bump exit</th><td data-coil="settling">2.80 s</td><td data-air="settling">2.38 s</td><td data-diff="settling">−0.42 s</td></tr>
-        </tbody>
-      </table>
-      <p class="q-note">RMS uses the first 2 s. Settling counts from bump exit to the last entry into a band of ±2% of peak body displacement.</p>
-    </div>
-  </section>
-
-  <section class="q-section" id="frequency">
-    <div class="q-section-title">
-      <h2>Frequency explorer</h2>
-      <p>Drive over a repeating 5 mm road wave. The response uses your current spring and damper settings and linearizes the air spring at ride height.</p>
-    </div>
-    <div class="q-lab" data-spectrum hidden>
-      <div class="q-frequency-controls">
-        <label for="q-frequency">Road frequency <output for="q-frequency" data-frequency-value>1.10 Hz</output>
-          <input type="range" id="q-frequency" data-frequency min="0.5" max="14" value="1.10" step="0.05">
-        </label>
-        <div class="q-frequency-jumps" aria-label="Jump to a test frequency">
-          <button class="q-button" type="button" data-jump="0.90">0.90 Hz</button>
-          <button class="q-button" type="button" data-jump="1.10">1.10 Hz</button>
-          <button class="q-button" type="button" data-jump="9.00">9.00 Hz</button>
-        </div>
-      </div>
-      <div class="q-spectrum-grid">
-        <div class="q-spectrum-plot"><canvas data-spectrum-plot="body" role="img" aria-label="Steady-state body displacement amplitude versus road frequency"></canvas></div>
-        <div class="q-spectrum-plot"><canvas data-spectrum-plot="tire" role="img" aria-label="Tire load variation amplitude versus road frequency"></canvas></div>
-      </div>
-      <div class="q-legend" aria-label="Frequency plot legend">
-        <span class="q-key q-coil">Coil</span><span class="q-key q-air">Linear air</span><span class="q-key q-road">Static tire load</span>
-      </div>
-      <table class="q-metrics q-frequency-table" aria-label="Steady-state amplitudes at the selected road frequency">
-        <thead><tr><th scope="col">Response amplitude</th><th scope="col">Coil</th><th scope="col">Linear air</th></tr></thead>
-        <tbody>
-          <tr><th scope="row">Body displacement</th><td data-sine-coil="body">13.83 mm</td><td data-sine-air="body">9.35 mm</td></tr>
-          <tr><th scope="row">Body acceleration</th><td data-sine-coil="acceleration">0.66 m/s²</td><td data-sine-air="acceleration">0.45 m/s²</td></tr>
-          <tr><th scope="row">Tire-load variation</th><td data-sine-coil="tire">0.208 kN</td><td data-sine-air="tire">0.137 kN</td></tr>
-        </tbody>
-      </table>
-      <p class="q-contact" data-spectrum-contact role="status"></p>
     </div>
   </section>
 
   <section class="q-section" id="model">
-    <div class="q-section-title"><h2>Two masses, two springs</h2><p>The body moves on the suspension and the wheel moves on the tire. That second motion makes it possible to compare tire contact as well as body comfort.</p></div>
-    <div class="q-columns">
-      <div>
-        <h3>Coil and damper</h3>
-        <p>The body is 300 kg, the wheel assembly is 60 kg, and the tire stiffness is 190 kN/m. The coil rate is 16 kN/m. Baseline damping is 1,000 N·s/m.</p>
-        <p>All displacements are measured from static ride height. Suspension compression <em>q</em> is wheel displacement minus body displacement. A positive suspension force <em>F</em> acts upward on the body and downward on the wheel.</p>
-        <div class="q-formula" aria-label="Body and wheel equations of motion">
-          <span><i>m</i><sub>s</sub> z̈<sub>s</sub> = <i>F</i></span>
-          <span><i>m</i><sub>u</sub> z̈<sub>u</sub> = <i>k</i><sub>t</sub>(<i>r</i> − <i>z</i><sub>u</sub>) − <i>F</i></span>
-        </div>
+    <div class="q-section-title"><h2>1 Mechanical model</h2></div>
+    <p class="q-report-copy">Week 6F used a single mass to study a suspension spring and damper in parallel <a class="q-inline-ref" href="#ref-1">[1]</a>. We added a separate wheel mass and tire spring so we could study tire unloading and wheel hop alongside body motion.</p>
+    <figure class="q-figure q-report-figure" id="fig-1">
+      <a href="{{ car }}/schematic.webp" aria-label="Open Figure 1 at full size"><img loading="lazy" src="{{ car }}/schematic.webp" width="1666" height="698" alt="Sprung and unsprung masses joined by a suspension spring and damper. A tire spring connects the unsprung mass to the road."></a>
+      <figcaption><strong>Figure 1.</strong> Two-degree-of-freedom quarter car. The suspension element represents either the coil or the sealed air spring.</figcaption>
+    </figure>
+    <p class="q-report-copy">Body displacement <i>z</i><sub>s</sub>, wheel displacement <i>z</i><sub>u</sub>, and road height <i>r</i> are positive upward from static equilibrium. Positive compression <i>q</i> means the wheel has moved upward relative to the body. Gravity and spring preload cancel in the incremental force balances.</p>
+    <div class="q-report-equation" id="eq-1">
+      <div class="q-equation-formulas">
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mi>q</mi>
+            <mo>=</mo>
+            <msub>
+              <mi>z</mi>
+              <mi>u</mi>
+            </msub>
+            <mo>−</mo>
+            <msub>
+              <mi>z</mi>
+              <mi>s</mi>
+            </msub>
+          </mrow>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mi>F</mi>
+            <mo>=</mo>
+            <mi>k</mi>
+            <mi>q</mi>
+            <mo>+</mo>
+            <mi>c</mi>
+            <mover accent="true">
+              <mi>q</mi>
+              <mo>˙</mo>
+            </mover>
+          </mrow>
+        </math>
       </div>
-      <figure class="q-figure"><img loading="lazy" src="{{ car }}/schematic.webp" width="1666" height="698" alt="Body and wheel masses linked by a spring and damper. The tire spring connects the wheel and road.">
-        <figcaption>Quarter-car model with upward displacements and a road height input.</figcaption>
-      </figure>
+      <span class="q-equation-number">(1)</span>
     </div>
-    <div class="q-columns q-model-air">
-      <figure class="q-figure"><img loading="lazy" src="{{ car }}/spring-forces.webp" width="1666" height="651" alt="Force versus compression for the coil spring, nonlinear air spring, and its ride-height tangent.">
-        <figcaption>The slope of the air spring increases as the chamber compresses.</figcaption>
-      </figure>
-      <div>
-        <h3>Sealed air spring</h3>
-        <p>Compression shrinks the chamber volume and raises its absolute pressure. Static lift balances body weight. The gas force used in the simulation is the increase from that equilibrium lift.</p>
-        <div class="q-formula" aria-label="Air spring volume and tangent stiffness">
-          <span><i>V</i> = <i>V</i><sub>0</sub> − <i>A</i><sub>e</sub><i>q</i></span>
-          <span><i>k</i><sub>air</sub> = <i>n p</i><sub>0</sub><i>A</i><sub>e</sub><sup>2</sup> / <i>V</i><sub>0</sub></span>
+    <div class="q-report-equation" id="eq-2">
+      <div class="q-equation-formulas">
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <msub>
+              <mi>m</mi>
+              <mi>s</mi>
+            </msub>
+            <mover accent="true">
+              <msub>
+                <mi>z</mi>
+                <mi>s</mi>
+              </msub>
+              <mo>¨</mo>
+            </mover>
+            <mo>=</mo>
+            <mi>F</mi>
+          </mrow>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <msub>
+              <mi>m</mi>
+              <mi>u</mi>
+            </msub>
+            <mover accent="true">
+              <msub>
+                <mi>z</mi>
+                <mi>u</mi>
+              </msub>
+              <mo>¨</mo>
+            </mover>
+            <mo>=</mo>
+            <msub>
+              <mi>k</mi>
+              <mi>t</mi>
+            </msub>
+            <mrow>
+              <mo stretchy="true">(</mo>
+              <mi>r</mi>
+              <mo>−</mo>
+              <msub>
+                <mi>z</mi>
+                <mi>u</mi>
+              </msub>
+              <mo stretchy="true">)</mo>
+            </mrow>
+            <mo>−</mo>
+            <mi>F</mi>
+          </mrow>
+        </math>
+      </div>
+      <span class="q-equation-number">(2)</span>
+    </div>
+    <p class="q-report-copy">A positive suspension force <i>F</i> acts upward on the body and downward on the wheel. The tire is linear. The two models share the same masses, tire rate, and baseline damping.</p>
+    <figure class="q-report-table-figure" id="table-1">
+      <figcaption id="table-1-caption">Table 1. Common vehicle parameters and baseline coil rate <a class="q-inline-ref" href="#ref-2">[2]</a></figcaption>
+      <div class="q-report-table-box" role="region" aria-labelledby="table-1-caption" tabindex="0">
+        <table class="q-report-table q-wide-table" aria-labelledby="table-1-caption">
+          <thead>
+            <tr>
+              <th scope="col">Parameter</th>
+              <th scope="col">Value</th>
+              <th scope="col">Parameter</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Sprung mass mₛ</th><td>300 kg</td><td>Unsprung mass mᵤ</td><td>60 kg</td></tr>
+            <tr><th scope="row">Coil rate k</th><td>16.00 kN/m</td><td>Tire rate kₜ</td><td>190.0 kN/m</td></tr>
+            <tr><th scope="row">Damping coefficient c</th><td>1,000 N·s/m</td><td>Gravity g</td><td>9.81 m/s²</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+  </section>
+
+  <section class="q-section" id="state-space">
+    <div class="q-section-title"><h2>2 State space and transfer functions</h2></div>
+    <p class="q-report-copy">The four states are the two displacements and velocities <a class="q-inline-ref" href="#ref-3">[3]</a>. Road height is the input. The outputs are body displacement, body acceleration, suspension compression, and incremental tire load.</p>
+    <div class="q-report-equation" id="eq-3">
+      <div class="q-equation-formulas">
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mi>x</mi>
+            <mo>=</mo>
+            <msup>
+              <mrow>
+                <mo stretchy="true">[</mo>
+                <mtable>
+                  <mtr>
+                    <mtd>
+                      <msub>
+                        <mi>z</mi>
+                        <mi>s</mi>
+                      </msub>
+                    </mtd>
+                    <mtd>
+                      <mover accent="true">
+                        <msub>
+                          <mi>z</mi>
+                          <mi>s</mi>
+                        </msub>
+                        <mo>˙</mo>
+                      </mover>
+                    </mtd>
+                    <mtd>
+                      <msub>
+                        <mi>z</mi>
+                        <mi>u</mi>
+                      </msub>
+                    </mtd>
+                    <mtd>
+                      <mover accent="true">
+                        <msub>
+                          <mi>z</mi>
+                          <mi>u</mi>
+                        </msub>
+                        <mo>˙</mo>
+                      </mover>
+                    </mtd>
+                  </mtr>
+                </mtable>
+                <mo stretchy="true">]</mo>
+              </mrow>
+              <mi>T</mi>
+            </msup>
+          </mrow>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mover accent="true">
+              <mi>x</mi>
+              <mo>˙</mo>
+            </mover>
+            <mo>=</mo>
+            <mi>A</mi>
+            <mi>x</mi>
+            <mo>+</mo>
+            <mi>B</mi>
+            <mi>r</mi>
+          </mrow>
+        </math>
+      </div>
+      <span class="q-equation-number">(3)</span>
+    </div>
+    <div class="q-report-equation">
+      <div class="q-equation-formulas">
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mi>A</mi>
+            <mo>=</mo>
+            <mrow>
+              <mo stretchy="true">[</mo>
+              <mtable>
+                <mtr>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                  <mtd>
+                    <mn>1</mn>
+                  </mtd>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd>
+                    <mrow>
+                      <mo>−</mo>
+                      <mfrac>
+                        <mi>k</mi>
+                        <msub>
+                          <mi>m</mi>
+                          <mi>s</mi>
+                        </msub>
+                      </mfrac>
+                    </mrow>
+                  </mtd>
+                  <mtd>
+                    <mrow>
+                      <mo>−</mo>
+                      <mfrac>
+                        <mi>c</mi>
+                        <msub>
+                          <mi>m</mi>
+                          <mi>s</mi>
+                        </msub>
+                      </mfrac>
+                    </mrow>
+                  </mtd>
+                  <mtd>
+                    <mfrac>
+                      <mi>k</mi>
+                      <msub>
+                        <mi>m</mi>
+                        <mi>s</mi>
+                      </msub>
+                    </mfrac>
+                  </mtd>
+                  <mtd>
+                    <mfrac>
+                      <mi>c</mi>
+                      <msub>
+                        <mi>m</mi>
+                        <mi>s</mi>
+                      </msub>
+                    </mfrac>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                  <mtd>
+                    <mn>1</mn>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd>
+                    <mfrac>
+                      <mi>k</mi>
+                      <msub>
+                        <mi>m</mi>
+                        <mi>u</mi>
+                      </msub>
+                    </mfrac>
+                  </mtd>
+                  <mtd>
+                    <mfrac>
+                      <mi>c</mi>
+                      <msub>
+                        <mi>m</mi>
+                        <mi>u</mi>
+                      </msub>
+                    </mfrac>
+                  </mtd>
+                  <mtd>
+                    <mrow>
+                      <mo>−</mo>
+                      <mfrac>
+                        <mrow>
+                          <mi>k</mi>
+                          <mo>+</mo>
+                          <msub>
+                            <mi>k</mi>
+                            <mi>t</mi>
+                          </msub>
+                        </mrow>
+                        <msub>
+                          <mi>m</mi>
+                          <mi>u</mi>
+                        </msub>
+                      </mfrac>
+                    </mrow>
+                  </mtd>
+                  <mtd>
+                    <mrow>
+                      <mo>−</mo>
+                      <mfrac>
+                        <mi>c</mi>
+                        <msub>
+                          <mi>m</mi>
+                          <mi>u</mi>
+                        </msub>
+                      </mfrac>
+                    </mrow>
+                  </mtd>
+                </mtr>
+              </mtable>
+              <mo stretchy="true">]</mo>
+            </mrow>
+          </mrow>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mi>B</mi>
+            <mo>=</mo>
+            <mrow>
+              <mo stretchy="true">[</mo>
+              <mtable>
+                <mtr>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd>
+                    <mfrac>
+                      <msub>
+                        <mi>k</mi>
+                        <mi>t</mi>
+                      </msub>
+                      <msub>
+                        <mi>m</mi>
+                        <mi>u</mi>
+                      </msub>
+                    </mfrac>
+                  </mtd>
+                </mtr>
+              </mtable>
+              <mo stretchy="true">]</mo>
+            </mrow>
+          </mrow>
+        </math>
+      </div>
+    </div>
+    <div class="q-report-equation" id="eq-4">
+      <div class="q-equation-formulas">
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mi>y</mi>
+            <mo>=</mo>
+            <msup>
+              <mrow>
+                <mo stretchy="true">[</mo>
+                <mtable>
+                  <mtr>
+                    <mtd>
+                      <msub>
+                        <mi>z</mi>
+                        <mi>s</mi>
+                      </msub>
+                    </mtd>
+                    <mtd>
+                      <msub>
+                        <mi>a</mi>
+                        <mi>s</mi>
+                      </msub>
+                    </mtd>
+                    <mtd>
+                      <mi>q</mi>
+                    </mtd>
+                    <mtd>
+                      <mrow>
+                        <mi>Δ</mi>
+                        <msub>
+                          <mi>F</mi>
+                          <mi>t</mi>
+                        </msub>
+                      </mrow>
+                    </mtd>
+                  </mtr>
+                </mtable>
+                <mo stretchy="true">]</mo>
+              </mrow>
+              <mi>T</mi>
+            </msup>
+          </mrow>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mi>y</mi>
+            <mo>=</mo>
+            <mi>C</mi>
+            <mi>x</mi>
+            <mo>+</mo>
+            <mi>D</mi>
+            <mi>r</mi>
+          </mrow>
+        </math>
+      </div>
+      <span class="q-equation-number">(4)</span>
+    </div>
+    <div class="q-report-equation">
+      <div class="q-equation-formulas">
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mi>C</mi>
+            <mo>=</mo>
+            <mrow>
+              <mo stretchy="true">[</mo>
+              <mtable>
+                <mtr>
+                  <mtd>
+                    <mn>1</mn>
+                  </mtd>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd>
+                    <mrow>
+                      <mo>−</mo>
+                      <mfrac>
+                        <mi>k</mi>
+                        <msub>
+                          <mi>m</mi>
+                          <mi>s</mi>
+                        </msub>
+                      </mfrac>
+                    </mrow>
+                  </mtd>
+                  <mtd>
+                    <mrow>
+                      <mo>−</mo>
+                      <mfrac>
+                        <mi>c</mi>
+                        <msub>
+                          <mi>m</mi>
+                          <mi>s</mi>
+                        </msub>
+                      </mfrac>
+                    </mrow>
+                  </mtd>
+                  <mtd>
+                    <mfrac>
+                      <mi>k</mi>
+                      <msub>
+                        <mi>m</mi>
+                        <mi>s</mi>
+                      </msub>
+                    </mfrac>
+                  </mtd>
+                  <mtd>
+                    <mfrac>
+                      <mi>c</mi>
+                      <msub>
+                        <mi>m</mi>
+                        <mi>s</mi>
+                      </msub>
+                    </mfrac>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd>
+                    <mrow>
+                      <mo>−</mo>
+                      <mn>1</mn>
+                    </mrow>
+                  </mtd>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                  <mtd>
+                    <mn>1</mn>
+                  </mtd>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                  <mtd>
+                    <mrow>
+                      <mo>−</mo>
+                      <msub>
+                        <mi>k</mi>
+                        <mi>t</mi>
+                      </msub>
+                    </mrow>
+                  </mtd>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                </mtr>
+              </mtable>
+              <mo stretchy="true">]</mo>
+            </mrow>
+          </mrow>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mi>D</mi>
+            <mo>=</mo>
+            <mrow>
+              <mo stretchy="true">[</mo>
+              <mtable>
+                <mtr>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd>
+                    <mn>0</mn>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd>
+                    <msub>
+                      <mi>k</mi>
+                      <mi>t</mi>
+                    </msub>
+                  </mtd>
+                </mtr>
+              </mtable>
+              <mo stretchy="true">]</mo>
+            </mrow>
+          </mrow>
+        </math>
+      </div>
+    </div>
+    <p class="q-report-copy">Taking the Laplace transform of the force balances from rest gives two coupled equations with off-diagonal terms of −<i>h</i>. The four outputs share a fourth-order denominator, Δ.</p>
+    <div class="q-report-equation">
+      <div class="q-equation-formulas">
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mrow>
+              <mi>h</mi>
+              <mrow>
+                <mo stretchy="true">(</mo>
+                <mi>s</mi>
+                <mo stretchy="true">)</mo>
+              </mrow>
+            </mrow>
+            <mo>=</mo>
+            <mi>k</mi>
+            <mo>+</mo>
+            <mi>c</mi>
+            <mi>s</mi>
+          </mrow>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block" class="q-wide-math">
+          <mrow>
+            <mrow>
+              <mi>Δ</mi>
+              <mrow>
+                <mo stretchy="true">(</mo>
+                <mi>s</mi>
+                <mo stretchy="true">)</mo>
+              </mrow>
+            </mrow>
+            <mo>=</mo>
+            <mrow>
+              <mo stretchy="true">(</mo>
+              <msub>
+                <mi>m</mi>
+                <mi>s</mi>
+              </msub>
+              <msup>
+                <mi>s</mi>
+                <mn>2</mn>
+              </msup>
+              <mo>+</mo>
+              <mi>h</mi>
+              <mo stretchy="true">)</mo>
+            </mrow>
+            <mrow>
+              <mo stretchy="true">(</mo>
+              <msub>
+                <mi>m</mi>
+                <mi>u</mi>
+              </msub>
+              <msup>
+                <mi>s</mi>
+                <mn>2</mn>
+              </msup>
+              <mo>+</mo>
+              <mi>h</mi>
+              <mo>+</mo>
+              <msub>
+                <mi>k</mi>
+                <mi>t</mi>
+              </msub>
+              <mo stretchy="true">)</mo>
+            </mrow>
+            <mo>−</mo>
+            <msup>
+              <mi>h</mi>
+              <mn>2</mn>
+            </msup>
+          </mrow>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block" class="q-narrow-math">
+          <mrow>
+            <mtable columnalign="left">
+              <mtr>
+                <mtd>
+                  <mrow>
+                    <mrow>
+                      <mi>Δ</mi>
+                      <mrow>
+                        <mo stretchy="true">(</mo>
+                        <mi>s</mi>
+                        <mo stretchy="true">)</mo>
+                      </mrow>
+                    </mrow>
+                    <mo>=</mo>
+                    <mrow>
+                      <mo stretchy="true">(</mo>
+                      <msub>
+                        <mi>m</mi>
+                        <mi>s</mi>
+                      </msub>
+                      <msup>
+                        <mi>s</mi>
+                        <mn>2</mn>
+                      </msup>
+                      <mo>+</mo>
+                      <mi>h</mi>
+                      <mo stretchy="true">)</mo>
+                    </mrow>
+                  </mrow>
+                </mtd>
+              </mtr>
+              <mtr>
+                <mtd>
+                  <mrow>
+                    <mo>×</mo>
+                    <mrow>
+                      <mo stretchy="true">(</mo>
+                      <msub>
+                        <mi>m</mi>
+                        <mi>u</mi>
+                      </msub>
+                      <msup>
+                        <mi>s</mi>
+                        <mn>2</mn>
+                      </msup>
+                      <mo>+</mo>
+                      <mi>h</mi>
+                      <mo>+</mo>
+                      <msub>
+                        <mi>k</mi>
+                        <mi>t</mi>
+                      </msub>
+                      <mo stretchy="true">)</mo>
+                    </mrow>
+                    <mo>−</mo>
+                    <msup>
+                      <mi>h</mi>
+                      <mn>2</mn>
+                    </msup>
+                  </mrow>
+                </mtd>
+              </mtr>
+            </mtable>
+          </mrow>
+        </math>
+      </div>
+    </div>
+    <div class="q-report-equation" id="eq-5">
+      <div class="q-equation-formulas">
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mfrac>
+              <mrow>
+                <msub>
+                  <mi>Z</mi>
+                  <mi>s</mi>
+                </msub>
+                <mrow>
+                  <mo stretchy="true">(</mo>
+                  <mi>s</mi>
+                  <mo stretchy="true">)</mo>
+                </mrow>
+              </mrow>
+              <mrow>
+                <mi>R</mi>
+                <mrow>
+                  <mo stretchy="true">(</mo>
+                  <mi>s</mi>
+                  <mo stretchy="true">)</mo>
+                </mrow>
+              </mrow>
+            </mfrac>
+            <mo>=</mo>
+            <mfrac>
+              <mrow>
+                <msub>
+                  <mi>k</mi>
+                  <mi>t</mi>
+                </msub>
+                <mi>h</mi>
+              </mrow>
+              <mrow>
+                <mi>Δ</mi>
+                <mrow>
+                  <mo stretchy="true">(</mo>
+                  <mi>s</mi>
+                  <mo stretchy="true">)</mo>
+                </mrow>
+              </mrow>
+            </mfrac>
+          </mrow>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mfrac>
+              <mrow>
+                <msub>
+                  <mi>Z</mi>
+                  <mi>u</mi>
+                </msub>
+                <mrow>
+                  <mo stretchy="true">(</mo>
+                  <mi>s</mi>
+                  <mo stretchy="true">)</mo>
+                </mrow>
+              </mrow>
+              <mrow>
+                <mi>R</mi>
+                <mrow>
+                  <mo stretchy="true">(</mo>
+                  <mi>s</mi>
+                  <mo stretchy="true">)</mo>
+                </mrow>
+              </mrow>
+            </mfrac>
+            <mo>=</mo>
+            <mfrac>
+              <mrow>
+                <msub>
+                  <mi>k</mi>
+                  <mi>t</mi>
+                </msub>
+                <mrow>
+                  <mo stretchy="true">(</mo>
+                  <msub>
+                    <mi>m</mi>
+                    <mi>s</mi>
+                  </msub>
+                  <msup>
+                    <mi>s</mi>
+                    <mn>2</mn>
+                  </msup>
+                  <mo>+</mo>
+                  <mi>h</mi>
+                  <mo stretchy="true">)</mo>
+                </mrow>
+              </mrow>
+              <mrow>
+                <mi>Δ</mi>
+                <mrow>
+                  <mo stretchy="true">(</mo>
+                  <mi>s</mi>
+                  <mo stretchy="true">)</mo>
+                </mrow>
+              </mrow>
+            </mfrac>
+          </mrow>
+        </math>
+      </div>
+      <span class="q-equation-number">(5)</span>
+    </div>
+    <div class="q-report-equation">
+      <div class="q-equation-formulas">
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mfrac>
+              <mrow>
+                <msub>
+                  <mi>A</mi>
+                  <mi>s</mi>
+                </msub>
+                <mrow>
+                  <mo stretchy="true">(</mo>
+                  <mi>s</mi>
+                  <mo stretchy="true">)</mo>
+                </mrow>
+              </mrow>
+              <mrow>
+                <mi>R</mi>
+                <mrow>
+                  <mo stretchy="true">(</mo>
+                  <mi>s</mi>
+                  <mo stretchy="true">)</mo>
+                </mrow>
+              </mrow>
+            </mfrac>
+            <mo>=</mo>
+            <mfrac>
+              <mrow>
+                <msup>
+                  <mi>s</mi>
+                  <mn>2</mn>
+                </msup>
+                <msub>
+                  <mi>k</mi>
+                  <mi>t</mi>
+                </msub>
+                <mi>h</mi>
+              </mrow>
+              <mrow>
+                <mi>Δ</mi>
+                <mrow>
+                  <mo stretchy="true">(</mo>
+                  <mi>s</mi>
+                  <mo stretchy="true">)</mo>
+                </mrow>
+              </mrow>
+            </mfrac>
+          </mrow>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mfrac>
+              <mrow>
+                <mi>Q</mi>
+                <mrow>
+                  <mo stretchy="true">(</mo>
+                  <mi>s</mi>
+                  <mo stretchy="true">)</mo>
+                </mrow>
+              </mrow>
+              <mrow>
+                <mi>R</mi>
+                <mrow>
+                  <mo stretchy="true">(</mo>
+                  <mi>s</mi>
+                  <mo stretchy="true">)</mo>
+                </mrow>
+              </mrow>
+            </mfrac>
+            <mo>=</mo>
+            <mfrac>
+              <mrow>
+                <msub>
+                  <mi>k</mi>
+                  <mi>t</mi>
+                </msub>
+                <msub>
+                  <mi>m</mi>
+                  <mi>s</mi>
+                </msub>
+                <msup>
+                  <mi>s</mi>
+                  <mn>2</mn>
+                </msup>
+              </mrow>
+              <mrow>
+                <mi>Δ</mi>
+                <mrow>
+                  <mo stretchy="true">(</mo>
+                  <mi>s</mi>
+                  <mo stretchy="true">)</mo>
+                </mrow>
+              </mrow>
+            </mfrac>
+          </mrow>
+        </math>
+      </div>
+    </div>
+    <div class="q-report-equation">
+      <div class="q-equation-formulas">
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mfrac>
+              <mrow>
+                <mrow>
+                  <mi>Δ</mi>
+                  <msub>
+                    <mi>F</mi>
+                    <mi>t</mi>
+                  </msub>
+                </mrow>
+                <mrow>
+                  <mo stretchy="true">(</mo>
+                  <mi>s</mi>
+                  <mo stretchy="true">)</mo>
+                </mrow>
+              </mrow>
+              <mrow>
+                <mi>R</mi>
+                <mrow>
+                  <mo stretchy="true">(</mo>
+                  <mi>s</mi>
+                  <mo stretchy="true">)</mo>
+                </mrow>
+              </mrow>
+            </mfrac>
+            <mo>=</mo>
+            <msub>
+              <mi>k</mi>
+              <mi>t</mi>
+            </msub>
+            <mrow>
+              <mo stretchy="true">(</mo>
+              <mn>1</mn>
+              <mo>−</mo>
+              <mfrac>
+                <mrow>
+                  <msub>
+                    <mi>Z</mi>
+                    <mi>u</mi>
+                  </msub>
+                  <mrow>
+                    <mo stretchy="true">(</mo>
+                    <mi>s</mi>
+                    <mo stretchy="true">)</mo>
+                  </mrow>
+                </mrow>
+                <mrow>
+                  <mi>R</mi>
+                  <mrow>
+                    <mo stretchy="true">(</mo>
+                    <mi>s</mi>
+                    <mo stretchy="true">)</mo>
+                  </mrow>
+                </mrow>
+              </mfrac>
+              <mo stretchy="true">)</mo>
+            </mrow>
+          </mrow>
+        </math>
+      </div>
+    </div>
+    <p class="q-report-copy">At steady state, a constant change in road height moves both masses by the same amount. The displacement gains are 1 at zero frequency, and acceleration, compression, and incremental tire load return to zero. The direct term in <i>D</i> gives the tire’s immediate response to a road-height change.</p>
+  </section>
+
+  <section class="q-section" id="air-spring">
+    <div class="q-section-title"><h2>3 Air spring and linearization</h2></div>
+    <p class="q-report-copy">The air case uses a sealed chamber and the same damper. Compression reduces volume at a constant effective area. The trapped gas follows a polytropic pressure-volume law <a class="q-inline-ref" href="#ref-4">[4]</a>.</p>
+    <div class="q-report-equation" id="eq-6">
+      <div class="q-equation-formulas">
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mrow>
+              <mi>V</mi>
+              <mrow>
+                <mo stretchy="true">(</mo>
+                <mi>q</mi>
+                <mo stretchy="true">)</mo>
+              </mrow>
+            </mrow>
+            <mo>=</mo>
+            <msub>
+              <mi>V</mi>
+              <mi>0</mi>
+            </msub>
+            <mo>−</mo>
+            <msub>
+              <mi>A</mi>
+              <mi>e</mi>
+            </msub>
+            <mi>q</mi>
+          </mrow>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mrow>
+              <mi>p</mi>
+              <mrow>
+                <mo stretchy="true">(</mo>
+                <mi>q</mi>
+                <mo stretchy="true">)</mo>
+              </mrow>
+            </mrow>
+            <mo>=</mo>
+            <msub>
+              <mi>p</mi>
+              <mi>0</mi>
+            </msub>
+            <msup>
+              <mrow>
+                <mo stretchy="true">(</mo>
+                <mfrac>
+                  <msub>
+                    <mi>V</mi>
+                    <mi>0</mi>
+                  </msub>
+                  <mrow>
+                    <mi>V</mi>
+                    <mrow>
+                      <mo stretchy="true">(</mo>
+                      <mi>q</mi>
+                      <mo stretchy="true">)</mo>
+                    </mrow>
+                  </mrow>
+                </mfrac>
+                <mo stretchy="true">)</mo>
+              </mrow>
+              <mi>n</mi>
+            </msup>
+          </mrow>
+        </math>
+      </div>
+      <span class="q-equation-number">(6)</span>
+    </div>
+    <p class="q-report-copy">The gas law uses absolute pressure. The lift uses gauge pressure, so the ride-height pressure balances the body weight. Subtracting this static lift gives the incremental force in the air model.</p>
+    <div class="q-report-equation">
+      <div class="q-equation-formulas">
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <msub>
+              <mi>p</mi>
+              <mi>0</mi>
+            </msub>
+            <mo>=</mo>
+            <msub>
+              <mi>p</mi>
+              <mi>atm</mi>
+            </msub>
+            <mo>+</mo>
+            <mfrac>
+              <mrow>
+                <msub>
+                  <mi>m</mi>
+                  <mi>s</mi>
+                </msub>
+                <mi>g</mi>
+              </mrow>
+              <msub>
+                <mi>A</mi>
+                <mi>e</mi>
+              </msub>
+            </mfrac>
+          </mrow>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <msub>
+              <mi>p</mi>
+              <mi>0</mi>
+            </msub>
+            <mo>=</mo>
+            <mn>297.525</mn>
+            <mtext> kPa absolute</mtext>
+          </mrow>
+        </math>
+      </div>
+    </div>
+    <div class="q-report-equation">
+      <div class="q-equation-formulas">
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mrow>
+              <msub>
+                <mi>F</mi>
+                <mi>a</mi>
+              </msub>
+              <mrow>
+                <mo stretchy="true">(</mo>
+                <mi>q</mi>
+                <mo stretchy="true">)</mo>
+              </mrow>
+            </mrow>
+            <mo>=</mo>
+            <msub>
+              <mi>A</mi>
+              <mi>e</mi>
+            </msub>
+            <mrow>
+              <mo stretchy="true">(</mo>
+              <mrow>
+                <mi>p</mi>
+                <mrow>
+                  <mo stretchy="true">(</mo>
+                  <mi>q</mi>
+                  <mo stretchy="true">)</mo>
+                </mrow>
+              </mrow>
+              <mo>−</mo>
+              <msub>
+                <mi>p</mi>
+                <mi>0</mi>
+              </msub>
+              <mo stretchy="true">)</mo>
+            </mrow>
+          </mrow>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mi>F</mi>
+            <mo>=</mo>
+            <mrow>
+              <msub>
+                <mi>F</mi>
+                <mi>a</mi>
+              </msub>
+              <mrow>
+                <mo stretchy="true">(</mo>
+                <mi>q</mi>
+                <mo stretchy="true">)</mo>
+              </mrow>
+            </mrow>
+            <mo>+</mo>
+            <mi>c</mi>
+            <mover accent="true">
+              <mi>q</mi>
+              <mo>˙</mo>
+            </mover>
+          </mrow>
+        </math>
+      </div>
+    </div>
+    <p class="q-report-copy">We used a first-order Taylor expansion at ride height, where the incremental spring force is zero <a class="q-inline-ref" href="#ref-5">[5]</a>. The tangent slope replaces the coil rate in the linear state matrices and transfer functions.</p>
+    <div class="q-report-equation" id="eq-7">
+      <div class="q-equation-formulas">
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <msub>
+              <mi>k</mi>
+              <mi>air</mi>
+            </msub>
+            <mo>=</mo>
+            <msub>
+              <mrow>
+                <mo stretchy="true">[</mo>
+                <mfrac>
+                  <mrow>
+                    <mi>d</mi>
+                    <msub>
+                      <mi>F</mi>
+                      <mi>a</mi>
+                    </msub>
+                  </mrow>
+                  <mrow>
+                    <mi>d</mi>
+                    <mi>q</mi>
+                  </mrow>
+                </mfrac>
+                <mo stretchy="true">]</mo>
+              </mrow>
+              <mrow>
+                <mi>q</mi>
+                <mo>=</mo>
+                <mn>0</mn>
+              </mrow>
+            </msub>
+            <mo>=</mo>
+            <mfrac>
+              <mrow>
+                <mi>n</mi>
+                <msub>
+                  <mi>p</mi>
+                  <mi>0</mi>
+                </msub>
+                <msup>
+                  <msub>
+                    <mi>A</mi>
+                    <mi>e</mi>
+                  </msub>
+                  <mn>2</mn>
+                </msup>
+              </mrow>
+              <msub>
+                <mi>V</mi>
+                <mi>0</mi>
+              </msub>
+            </mfrac>
+          </mrow>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <msub>
+              <mi>k</mi>
+              <mi>air</mi>
+            </msub>
+            <mo>=</mo>
+            <mn>11.603</mn>
+            <mtext> kN/m</mtext>
+          </mrow>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mrow>
+              <msub>
+                <mi>F</mi>
+                <mi>a</mi>
+              </msub>
+              <mrow>
+                <mo stretchy="true">(</mo>
+                <mi>q</mi>
+                <mo stretchy="true">)</mo>
+              </mrow>
+            </mrow>
+            <mo>≈</mo>
+            <msub>
+              <mi>k</mi>
+              <mi>air</mi>
+            </msub>
+            <mi>q</mi>
+          </mrow>
+        </math>
+      </div>
+      <span class="q-equation-number">(7)</span>
+    </div>
+    <figure class="q-report-table-figure" id="table-2">
+      <figcaption id="table-2-caption">Table 2. Air chamber and environment assumptions</figcaption>
+      <div class="q-report-table-box" role="region" aria-labelledby="table-2-caption" tabindex="0">
+        <table class="q-report-table q-wide-table" aria-labelledby="table-2-caption">
+          <thead>
+            <tr>
+              <th scope="col">Effective area Aₑ</th>
+              <th scope="col">Ride-height volume V₀</th>
+              <th scope="col">Exponent n</th>
+              <th scope="col">Atmospheric pressure</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">0.0150 m²</th><td>7.50 L</td><td>1.30</td><td>101.325 kPa</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+    <figure class="q-figure q-report-figure" id="fig-2">
+      <a href="{{ car }}/spring-forces.webp" aria-label="Open Figure 2 at full size"><img loading="lazy" src="{{ car }}/spring-forces.webp" width="1666" height="651" alt="Incremental spring force against compression for the coil, nonlinear air, and linearized air. The nonlinear air force steepens in compression."></a>
+      <figcaption><strong>Figure 2.</strong> The air force curves upward as the chamber compresses. Its tangent at zero compression gives the small-motion rate.</figcaption>
+    </figure>
+    <p class="q-report-copy">At the same static pressure, a larger air chamber lowers the tangent rate. The nonlinear force stiffens as the chamber compresses.</p>
+  </section>
+
+  <section class="q-section" id="frequency">
+    <div class="q-section-title"><h2>4 Frequency response</h2></div>
+    <p class="q-report-copy">The eigenvalues of <i>A</i> give two stable modes. The magnitude of each pole’s imaginary part divided by 2π gives the damped frequency. The negative real part divided by the pole magnitude gives the damping ratio. In the wheel-hop mode the wheel moves about 17 times as far as the body.</p>
+    <figure class="q-report-table-figure" id="table-3">
+      <figcaption id="table-3-caption">Table 3. Poles, damped frequencies, and modal damping ratios</figcaption>
+      <div class="q-report-table-box" role="region" aria-labelledby="table-3-caption" tabindex="0">
+        <table class="q-report-table q-wide-table" aria-labelledby="table-3-caption">
+          <thead>
+            <tr>
+              <th scope="col">Model</th>
+              <th scope="col">Mode</th>
+              <th scope="col">Poles (s⁻¹)</th>
+              <th scope="col">Damped f (Hz)</th>
+              <th scope="col">Damping ratio</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Coil</th><td>Body bounce</td><td>−1.432 ± j6.914</td><td>1.10</td><td>0.203</td></tr>
+            <tr><th scope="row">Coil</th><td>Wheel hop</td><td>−8.568 ± j57.570</td><td>9.16</td><td>0.147</td></tr>
+            <tr><th scope="row">Linear air</th><td>Body bounce</td><td>−1.499 ± j5.895</td><td>0.94</td><td>0.246</td></tr>
+            <tr><th scope="row">Linear air</th><td>Wheel hop</td><td>−8.501 ± j56.908</td><td>9.06</td><td>0.148</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+    <p class="q-report-copy">We evaluated the body transfer function at <i>s</i> = jω and plotted its magnitude and phase <a class="q-inline-ref" href="#ref-6">[6]</a>. Linearized air moved the body peak from 1.09 to 0.92&nbsp;Hz and lowered it from 8.85 to 7.45&nbsp;dB.</p>
+    <figure class="q-figure q-report-figure" id="fig-3">
+      <a href="{{ car }}/frequency.webp" aria-label="Open Figure 3 at full size"><img loading="lazy" src="{{ car }}/frequency.webp" width="1666" height="918" alt="Bode magnitude and phase for body displacement divided by road height. The air model’s first peak is lower and occurs at a lower frequency."></a>
+      <figcaption><strong>Figure 3.</strong> Road-to-body displacement Bode plots at the baseline spring and damping settings.</figcaption>
+    </figure>
+    <figure class="q-report-table-figure" id="table-4">
+      <figcaption id="table-4-caption">Table 4. Steady-state amplitudes on a 5 mm sinusoidal road</figcaption>
+      <div class="q-report-table-box" role="region" aria-labelledby="table-4-caption" tabindex="0">
+        <table class="q-report-table q-wide-table" aria-labelledby="table-4-caption">
+          <thead>
+            <tr>
+              <th scope="col">Frequency (Hz)</th>
+              <th scope="col">Coil body (mm)</th>
+              <th scope="col">Air body (mm)</th>
+              <th scope="col">Tire-load amplitude (kN)<small>Coil / air</small></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">0.9</th><td>11.06</td><td>11.75</td><td>0.12 / 0.12</td></tr>
+            <tr><th scope="row">1.1</th><td>13.83</td><td>9.35</td><td>0.21 / 0.14</td></tr>
+            <tr><th scope="row">9</th><td>1.00</td><td>0.99</td><td>3.02 / 3.15</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+    <p class="q-report-copy">Air has more body motion at 0.9&nbsp;Hz, near its own body resonance, and less at 1.1&nbsp;Hz, near the coil resonance. Near wheel hop at 9&nbsp;Hz, the body moves about 1&nbsp;mm while the tire-load amplitude reaches about 3&nbsp;kN.</p>
+    <div class="q-embedded-lab" id="frequency-explorer">
+      <h3>Explore the frequency response</h3>
+      <p class="q-report-copy">Choose a road frequency for the 5&nbsp;mm wave. The explorer uses the current spring and damper settings from the bump simulator.</p>
+      <noscript><p>Enable JavaScript to change the frequency. The baseline results are shown above.</p></noscript>
+      <div class="q-lab" data-spectrum hidden>
+        <div class="q-frequency-controls">
+          <label for="q-frequency">Road frequency <output for="q-frequency" data-frequency-value>1.10 Hz</output>
+            <input type="range" id="q-frequency" data-frequency min="0.5" max="14" value="1.10" step="0.05">
+          </label>
+          <div class="q-frequency-jumps" aria-label="Jump to a test frequency">
+            <button class="q-button" type="button" data-jump="0.90">0.90 Hz</button>
+            <button class="q-button" type="button" data-jump="1.10">1.10 Hz</button>
+            <button class="q-button" type="button" data-jump="9.00">9.00 Hz</button>
+          </div>
         </div>
-        <p>At 7.5 L with a 0.015 m² effective area and polytropic exponent of 1.30, the tangent rate is 11.60 kN/m. Increasing volume lowers the rate at the same static load.</p>
+        <div class="q-spectrum-grid">
+          <div class="q-spectrum-plot"><canvas data-spectrum-plot="body" role="img" aria-label="Steady-state body displacement amplitude versus road frequency"></canvas></div>
+          <div class="q-spectrum-plot"><canvas data-spectrum-plot="tire" role="img" aria-label="Tire load variation amplitude versus road frequency"></canvas></div>
+        </div>
+        <div class="q-legend" aria-label="Frequency plot legend">
+          <span class="q-key q-coil">Coil</span><span class="q-key q-air">Linear air</span><span class="q-key q-road">Static tire load</span>
+        </div>
+        <table class="q-metrics q-frequency-table" aria-label="Steady-state amplitudes at the selected road frequency">
+          <thead><tr><th scope="col">Response amplitude</th><th scope="col">Coil</th><th scope="col">Linear air</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Body displacement</th><td data-sine-coil="body">13.83 mm</td><td data-sine-air="body">9.35 mm</td></tr>
+            <tr><th scope="row">Body acceleration</th><td data-sine-coil="acceleration">0.66 m/s²</td><td data-sine-air="acceleration">0.45 m/s²</td></tr>
+            <tr><th scope="row">Tire-load variation</th><td data-sine-coil="tire">0.208 kN</td><td data-sine-air="tire">0.137 kN</td></tr>
+          </tbody>
+        </table>
+        <p class="q-contact" data-spectrum-contact role="status"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="q-section" id="bump-response">
+    <div class="q-section-title"><h2>5 Road bump response</h2></div>
+    <p class="q-report-copy">Both cars started at rest and crossed a 50&nbsp;mm raised-cosine bump in 0.20&nbsp;s. We integrated the four states through 6&nbsp;s using fourth-order Runge–Kutta with a 0.5&nbsp;ms step. The air model uses the nonlinear pressure law for this test.</p>
+    <div class="q-report-equation" id="eq-8">
+      <div class="q-equation-formulas">
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mrow>
+              <mi>r</mi>
+              <mrow>
+                <mo stretchy="true">(</mo>
+                <mi>t</mi>
+                <mo stretchy="true">)</mo>
+              </mrow>
+            </mrow>
+            <mo>=</mo>
+            <mfrac>
+              <mi>H</mi>
+              <mn>2</mn>
+            </mfrac>
+            <mrow>
+              <mo stretchy="true">(</mo>
+              <mn>1</mn>
+              <mo>−</mo>
+              <mrow>
+                <mi mathvariant="normal">cos</mi>
+                <mrow>
+                  <mo stretchy="true">(</mo>
+                  <mfrac>
+                    <mrow>
+                      <mn>2</mn>
+                      <mi>π</mi>
+                      <mi>t</mi>
+                    </mrow>
+                    <mi>T</mi>
+                  </mfrac>
+                  <mo stretchy="true">)</mo>
+                </mrow>
+              </mrow>
+              <mo stretchy="true">)</mo>
+            </mrow>
+          </mrow>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+          <mrow>
+            <mn>0</mn>
+            <mo>≤</mo>
+            <mi>t</mi>
+            <mo>≤</mo>
+            <mi>T</mi>
+            <mtext> (zero otherwise)</mtext>
+          </mrow>
+        </math>
+      </div>
+      <span class="q-equation-number">(8)</span>
+    </div>
+    <p class="q-report-copy">Peaks use absolute magnitudes. RMS acceleration uses the first 2&nbsp;s. Settling starts at bump exit and ends when the body stays within ±2% of its own peak displacement from equilibrium. Tire load includes the 3.532&nbsp;kN static load.</p>
+    <figure class="q-figure q-report-figure" id="fig-4">
+      <a href="{{ car }}/bump-response.webp" aria-label="Open Figure 4 at full size"><img loading="lazy" src="{{ car }}/bump-response.webp" width="1666" height="918" alt="Four time-response plots compare body displacement, body acceleration, suspension compression, and total tire load for coil and nonlinear air."></a>
+      <figcaption><strong>Figure 4.</strong> Baseline bump responses. Shading marks the 0.20&nbsp;s input. The right-hand plots zoom in on the first 0.8&nbsp;s.</figcaption>
+    </figure>
+    <figure class="q-report-table-figure" id="table-5">
+      <figcaption id="table-5-caption">Table 5. Comparison on the 50 mm bump at the baseline settings</figcaption>
+      <div class="q-report-table-box">
+        <table class="q-report-table q-baseline-table" aria-labelledby="table-5-caption">
+          <thead>
+            <tr>
+              <th scope="col">Metric</th>
+              <th scope="col">Coil spring</th>
+              <th scope="col">Nonlinear air</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Peak body displacement (mm)</th><td>28.50</td><td>26.08</td></tr>
+            <tr><th scope="row">Peak body acceleration (m/s²)</th><td>4.90</td><td>4.61</td></tr>
+            <tr><th scope="row">RMS body acceleration (m/s²)</th><td>1.113</td><td>1.009</td></tr>
+            <tr><th scope="row">Peak suspension travel (mm)</th><td>49.89</td><td>51.16</td></tr>
+            <tr><th scope="row">Minimum total tire load (kN)</th><td>1.116</td><td>0.965</td></tr>
+            <tr><th scope="row">Body settling after bump exit (s)</th><td>2.80</td><td>2.38</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+    <p class="q-report-copy">The air spring reduced RMS acceleration by 9.3% and used 1.27&nbsp;mm more suspension travel. It also reduced the minimum tire load by 0.151&nbsp;kN. Both cars retained positive tire load for this run.</p>
+    <div class="q-embedded-lab" id="simulator">
+      <h3>Run the bump simulation</h3>
+      <p class="q-report-copy">Change the road input, damping, coil rate, or air volume. Use the same settings for the report’s baseline, or match the coil and air tangent rates to isolate the nonlinear effect.</p>
+      <noscript><p>Enable JavaScript to change the settings or export a trace. The baseline results are shown above.</p></noscript>
+      <div class="q-lab" data-lab hidden>
+        <div class="q-case-row">
+          <label for="q-case">Test case
+            <select id="q-case" data-case>
+              <option value="baseline" selected>Baseline bump</option>
+              <option value="soft">Softer air spring</option>
+              <option value="damped">More damping</option>
+              <option value="large">Larger bump</option>
+              <option value="custom" disabled>Custom settings</option>
+            </select>
+          </label>
+        </div>
+        <div class="q-controls">
+          <label for="q-height">Bump height <output for="q-height" data-value="height">50 mm</output>
+            <input type="range" id="q-height" data-option="height" min="10" max="85" value="50" step="1">
+          </label>
+          <label for="q-duration">Crossing time <output for="q-duration" data-value="duration">0.20 s</output>
+            <input type="range" id="q-duration" data-option="duration" min="0.12" max="0.55" value="0.20" step="0.01">
+          </label>
+          <label for="q-damping">Damping <output for="q-damping" data-value="damping">1,000 N·s/m</output>
+            <input type="range" id="q-damping" data-option="damping" min="600" max="2200" value="1000" step="10">
+          </label>
+          <label for="q-coil">Coil rate <output for="q-coil" data-value="coilRate">16.00 kN/m</output>
+            <input type="range" id="q-coil" data-option="coilRate" min="12" max="20" value="16" step="0.25">
+          </label>
+          <label for="q-volume">Air volume <output for="q-volume" data-value="volume">7.50 L</output>
+            <input type="range" id="q-volume" data-option="volume" min="4.2" max="12" value="7.5" step="any">
+          </label>
+        </div>
+        <div class="q-tools">
+          <button class="q-button" type="button" data-match>Match coil rate</button>
+          <button class="q-button" type="button" data-reset>Reset settings</button>
+          <label class="q-check"><input type="checkbox" data-linear> Show linear air</label>
+          <span class="q-rate" data-rate>Air tangent rate 11.60 kN/m</span>
+        </div>
+
+        <div class="q-stage">
+          <div class="q-motion">
+            <h3>Quarter-car motion</h3>
+            <canvas data-motion role="img" aria-label="Animated comparison of two quarter-car models. Body, wheel, and road motion are drawn to an exaggerated scale."></canvas>
+            <div class="q-motion-readings" aria-label="Current body displacement">
+              <span>Coil <strong data-reading="coil">0.0 mm</strong></span>
+              <span>Air <strong data-reading="air">0.0 mm</strong></span>
+            </div>
+            <p class="q-note">Body displacement. Motion is exaggerated.</p>
+          </div>
+          <div class="q-trace">
+            <div class="q-trace-tools">
+              <label for="q-signal">Plot
+                <select id="q-signal" data-signal>
+                  <option value="body">Body displacement</option>
+                  <option value="acceleration">Body acceleration</option>
+                  <option value="compression">Suspension compression</option>
+                  <option value="tireLoad">Total tire load</option>
+                </select>
+              </label>
+              <label for="q-horizon">Window
+                <select id="q-horizon" data-horizon>
+                  <option value="1">1 s</option><option value="3.5" selected>3.5 s</option><option value="6">6 s</option>
+                </select>
+              </label>
+            </div>
+            <canvas data-plot role="img" aria-label="Time series of coil and air suspension response."></canvas>
+            <div class="q-legend" aria-label="Plot legend">
+              <span class="q-key q-coil">Coil</span><span class="q-key q-air">Nonlinear air</span>
+              <span class="q-key q-tangent" data-linear-key hidden>Linear air</span>
+              <span class="q-key q-road" data-road-key>Road input</span>
+            </div>
+          </div>
+        </div>
+        <div class="q-timeline">
+          <button class="q-button q-primary" type="button" data-play>Play</button>
+          <label for="q-time">Playback time</label>
+          <input type="range" id="q-time" data-time min="0" max="3.5" value="0" step="0.001">
+          <output for="q-time" data-clock aria-live="off">0.00 s</output>
+          <button class="q-button" type="button" data-export>Download trace CSV</button>
+        </div>
+        <p class="q-contact" role="status" data-contact></p>
+        <table class="q-metrics" aria-label="Comparison for the current bump over the full simulation">
+          <thead><tr><th scope="col">Full-run metric</th><th scope="col">Coil</th><th scope="col">Air</th><th scope="col">Air − coil</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Peak body displacement</th><td data-coil="bodyPeak">28.50 mm</td><td data-air="bodyPeak">26.08 mm</td><td data-diff="bodyPeak">−2.42 mm</td></tr>
+            <tr><th scope="row">Peak body acceleration</th><td data-coil="accelPeak">4.90 m/s²</td><td data-air="accelPeak">4.61 m/s²</td><td data-diff="accelPeak">−0.29 m/s²</td></tr>
+            <tr><th scope="row">RMS body acceleration</th><td data-coil="accelRMS">1.113 m/s²</td><td data-air="accelRMS">1.009 m/s²</td><td data-diff="accelRMS">−0.104 m/s²</td></tr>
+            <tr><th scope="row">Peak suspension travel</th><td data-coil="travel">49.89 mm</td><td data-air="travel">51.16 mm</td><td data-diff="travel">+1.27 mm</td></tr>
+            <tr><th scope="row">Minimum total tire load</th><td data-coil="minLoad">1.116 kN</td><td data-air="minLoad">0.965 kN</td><td data-diff="minLoad">−0.151 kN</td></tr>
+            <tr><th scope="row">Settling after bump exit</th><td data-coil="settling">2.80 s</td><td data-air="settling">2.38 s</td><td data-diff="settling">−0.42 s</td></tr>
+          </tbody>
+        </table>
+        <p class="q-note">RMS uses the first 2 s. Settling counts from bump exit to the last entry into a band of ±2% of peak body displacement.</p>
       </div>
     </div>
   </section>
 
   <section class="q-section" id="results">
-    <div class="q-section-title"><h2>What changed the ride</h2></div>
-    <div class="q-columns">
-      <div class="q-result-notes">
-        <h3>The 50 mm bump</h3>
-        <p>At 0.20 s crossing time, the nonlinear air case lowered RMS body acceleration from 1.113 to 1.009 m/s² and settled 0.42 s earlier. It used 1.27 mm more suspension travel and its minimum tire load fell from 1.116 to 0.965 kN.</p>
-        <h3>Frequency changes the ranking</h3>
-        <p>On a 5 mm sinusoidal road, the linear air model has slightly more body motion at 0.9 Hz and less at 1.1 Hz. Both models have a wheel-hop mode near 9 Hz, where tire load can vary by about 3 kN while the body moves only about 1 mm.</p>
-        <h3>Match the rates</h3>
-        <p>At 5.439 L the air tangent and coil both have a rate of 16 kN/m. The linear traces then coincide. At that volume the nonlinear air spring predicts more body motion on the same bump than the coil, 31.23 mm versus 28.50 mm.</p>
-        <h3>More damping settles faster</h3>
-        <p>In the air model, raising damping from 650 to 1,600 N·s/m cut settling from 3.91 to 1.34 s. It also raised RMS body acceleration from 0.834 to 1.367 m/s².</p>
+    <div class="q-section-title"><h2>6 Parameter effects and conclusions</h2></div>
+    <p class="q-report-copy">We changed one parameter at a time and kept the same baseline bump. For each air chamber volume, the static lift stayed the same. The rates in Table 6 describe the slope at ride height, and the results use the nonlinear air force.</p>
+    <figure class="q-report-table-figure" id="table-6">
+      <figcaption id="table-6-caption">Table 6. Effect of spring rate at 1,000 N·s/m</figcaption>
+      <div class="q-report-table-box" role="region" aria-labelledby="table-6-caption" tabindex="0">
+        <table class="q-report-table q-wide-table" aria-labelledby="table-6-caption">
+          <thead>
+            <tr>
+              <th scope="col">Spring setting</th>
+              <th scope="col">Rate (kN/m)</th>
+              <th scope="col">RMS aₛ (m/s²)</th>
+              <th scope="col">Peak travel (mm)</th>
+              <th scope="col">Min. load (kN)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Coil</th><td>12.00</td><td>1.005</td><td>51.4</td><td>0.897</td></tr>
+            <tr><th scope="row">Coil</th><td>16.00</td><td>1.113</td><td>49.9</td><td>1.116</td></tr>
+            <tr><th scope="row">Coil</th><td>20.00</td><td>1.252</td><td>48.4</td><td>1.321</td></tr>
+            <tr><th scope="row">Air, 5 L</th><td>17.41</td><td>1.198</td><td>48.5</td><td>1.379</td></tr>
+            <tr><th scope="row">Air, 7.5 L</th><td>11.60</td><td>1.009</td><td>51.2</td><td>0.965</td></tr>
+            <tr><th scope="row">Air, 10 L</th><td>8.70</td><td>0.948</td><td>52.5</td><td>0.759</td></tr>
+          </tbody>
+        </table>
       </div>
-      <figure class="q-figure"><img loading="lazy" src="{{ car }}/frequency.webp" width="1666" height="918" alt="Magnitude and phase of the body-to-road transfer function. The first magnitude peak shifts from 1.09 Hz with the coil to 0.92 Hz with linearized air.">
-        <figcaption>Small-signal Bode response. The coil’s first peak is 8.85 dB and the linear air peak is 7.45 dB.</figcaption>
-      </figure>
-    </div>
-    <p class="q-limit"><strong>Model limits.</strong> The comparison covers vertical motion at one corner with a sealed, constant-area air chamber and a linear damper and tire. A tire load at or below zero flags where the continuous-contact assumption breaks down.</p>
+    </figure>
+    <p class="q-report-copy">A softer coil or a larger air chamber reduced RMS acceleration, allowed more travel, and lowered minimum tire load.</p>
+    <figure class="q-report-table-figure" id="table-7">
+      <figcaption id="table-7-caption">Table 7. Effect of damping at the baseline spring settings</figcaption>
+      <div class="q-report-table-box" role="region" aria-labelledby="table-7-caption" tabindex="0">
+        <table class="q-report-table q-wide-table" aria-labelledby="table-7-caption">
+          <thead>
+            <tr>
+              <th scope="col">c (N·s/m)</th>
+              <th scope="col">RMS aₛ (m/s²)<small>Coil / air</small></th>
+              <th scope="col">Peak travel (mm)<small>Coil / air</small></th>
+              <th scope="col">Settling (s)<small>Coil / air</small></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">650</th><td>0.991 / 0.834</td><td>53.3 / 54.7</td><td>4.21 / 3.91</td></tr>
+            <tr><th scope="row">1,000</th><td>1.113 / 1.009</td><td>49.9 / 51.2</td><td>2.80 / 2.38</td></tr>
+            <tr><th scope="row">1,600</th><td>1.426 / 1.367</td><td>45.1 / 46.1</td><td>1.54 / 1.34</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+    <p class="q-report-copy">More damping shortened settling and reduced peak travel in both models. It also raised RMS acceleration as the damper transmitted more of the wheel’s fast motion to the body.</p>
+    <h3 class="q-report-subheading">Matched spring rate and model checks</h3>
+    <p class="q-report-copy">At 5.439&nbsp;L the air tangent matches the 16.00&nbsp;kN/m coil rate and the linear traces coincide. With the nonlinear gas law at that volume, peak body motion is 31.23&nbsp;mm for air and 28.50&nbsp;mm for the coil.</p>
+    <p class="q-report-copy">We checked the transfer functions against the state-space response. Halving the time step changed each baseline metric by less than 0.1%. The maximum body-displacement error of the air linearization grew from 4.5% of the nonlinear peak on a 25&nbsp;mm bump to 11.8% on a 65&nbsp;mm bump. On an 80&nbsp;mm bump, the predicted tire load dropped below zero and the continuous-contact assumption broke down.</p>
+    <h3 class="q-report-subheading">Conclusion</h3>
+    <p class="q-report-copy">The 7.50&nbsp;L air setup reduced body acceleration on the baseline bump. The coil kept more load on the tire and used less travel. Road frequency, spring rate, and damping changed that tradeoff. The results cover vertical motion of one corner with a sealed, constant-area air chamber and a linear tire and damper.</p>
   </section>
 
   <section class="q-section" id="reproduce">
-    <div class="q-section-title"><h2>Reproduce the study</h2></div>
-    <p>I focused on the Python simulation and the comparison of the body and tire responses for our three-person group. The model integrates four mechanical states with fourth-order Runge–Kutta at 0.5 ms steps. Halving the time step changed each baseline metric by less than 0.1%.</p>
-    <div class="q-downloads"><a class="q-button" href="{{ car }}/qcar.py" download>Download Python model</a><a class="q-button" href="{{ car }}/bump-response.webp" download>Download baseline response figure</a></div>
+    <div class="q-section-title"><h2 id="references">References</h2></div>
+    <ol class="q-references">
+      <li id="ref-1">Cornell University, “Group Work 6F: Passive Suspension Design,” MAE 3260, Fall 2026.</li>
+      <li id="ref-2">MathWorks, “Robust Control of Active Suspension.” <a href="https://www.mathworks.com/help/robust/gs/active-suspension-control-design.html">Quarter-car model and parameters</a></li>
+      <li id="ref-3">Cornell University, “State Space Miscellaneous Notes,” MAE 3260, Spring 2020.</li>
+      <li id="ref-4">Firestone Industrial Products, <cite>Airail Air Springs</cite>, pp. 17–19. <a href="https://www.firestoneairide.com/content/dam/fsip/airide/off-highway/pdfs/firestoneip-off-highway-rail-Airail.pdf">Air spring engineering manual</a></li>
+      <li id="ref-5">Cornell University, “Linearization Notes,” MAE 3260, Spring 2016.</li>
+      <li id="ref-6">Cornell University, “Group Work 6W: Bode Plots,” MAE 3260, Fall 2026.</li>
+    </ol>
+    <h3 class="q-report-subheading">Reproduce the study</h3>
+    <p class="q-report-copy">Run the Python model to reproduce the baseline bump, or download a CSV for your settings from the simulator.</p>
+    <div class="q-downloads">
+      <a class="q-button" href="{{ car }}/qcar.py" download>Download Python model</a>
+      <a class="q-button" href="{{ car }}/bump-response.webp" download>Download baseline response figure</a>
+    </div>
     <pre><code>python qcar.py --model air --csv air.csv</code></pre>
-    <ul class="q-sources">
-      <li>Vehicle parameters and quarter-car setup. <a href="https://www.mathworks.com/help/robust/gs/active-suspension-control-design.html">MathWorks quarter-car example</a></li>
-      <li>Air pressure, effective area, and spring rate. <a href="https://www.firestoneairide.com/content/dam/fsip/airide/off-highway/pdfs/firestoneip-off-highway-rail-Airail.pdf">Firestone Airail engineering manual, pp. 17–19</a></li>
-    </ul>
-    <p class="q-note">AI assisted with the analysis, figures, and interactive implementation.</p>
+    <p class="q-note">AI assisted with drafting, analysis, figures, and interactive implementation.</p>
   </section>
 </article>
 <script type="module" src="{{ car }}/demo.js"></script>
