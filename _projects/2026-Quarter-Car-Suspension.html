@@ -1,0 +1,178 @@
+---
+layout: default
+title: Quarter-Car Suspension
+permalink: /projects/quarter-car-suspension/
+description: Compare a coil spring and a sealed air spring in a two-mass quarter-car model. Change the bump, damping, and air volume in the interactive simulation.
+image: /assets/suspension/cover.webp
+---
+{% assign car = '/assets/suspension' | relative_url %}
+<link rel="stylesheet" href="{{ car }}/study.css">
+<article class="qcar" data-quarter-car>
+  <div class="q-hero">
+    <div class="q-hero-copy">
+      <p class="q-course">MAE 3260 · System Dynamics</p>
+      <h1>Quarter-car suspension</h1>
+      <p>What changes when a sealed air spring replaces a coil? Send two quarter cars over the same bump, then see what happens to the body, wheel, and tire load.</p>
+      <a class="q-button q-primary" href="#simulator">Try the simulator</a>
+    </div>
+    <img src="{{ car }}/cover.webp" width="1788" height="1163" alt="Quarter-car schematic beside simulated body motion traces for coil and air springs.">
+  </div>
+
+  <dl class="q-highlights" aria-label="Nonlinear air compared with the coil on the baseline bump">
+    <div><dt>Lower RMS body acceleration</dt><dd>9.3%</dd></div>
+    <div><dt>Shorter body settling time</dt><dd>0.42 s</dd></div>
+    <div><dt>Lower minimum tire load</dt><dd>0.15 kN</dd></div>
+  </dl>
+
+  <nav class="q-nav" aria-label="Project sections">
+    <a href="#simulator">Simulator</a><a href="#model">Model</a><a href="#results">Results</a><a href="#reproduce">Reproduce the study</a>
+  </nav>
+
+  <section class="q-section" id="simulator">
+    <div class="q-section-title">
+      <h2>Road bump simulator</h2>
+      <p>Change the sealed air volume, or match its small-motion stiffness to the coil. Both systems share the same damper setting and bump.</p>
+    </div>
+    <noscript><p>Enable JavaScript to run the simulator. The model, baseline results, and Python code are below.</p></noscript>
+    <div class="q-lab" data-lab hidden>
+      <div class="q-controls">
+        <label for="q-height">Bump height <output for="q-height" data-value="height">50 mm</output>
+          <input type="range" id="q-height" data-option="height" min="10" max="85" value="50" step="1">
+        </label>
+        <label for="q-duration">Crossing time <output for="q-duration" data-value="duration">0.20 s</output>
+          <input type="range" id="q-duration" data-option="duration" min="0.12" max="0.55" value="0.20" step="0.01">
+        </label>
+        <label for="q-damping">Damping <output for="q-damping" data-value="damping">1,000 N·s/m</output>
+          <input type="range" id="q-damping" data-option="damping" min="600" max="2200" value="1000" step="10">
+        </label>
+        <label for="q-volume">Air volume <output for="q-volume" data-value="volume">7.50 L</output>
+          <input type="range" id="q-volume" data-option="volume" min="4.5" max="12" value="7.5" step="any">
+        </label>
+      </div>
+      <div class="q-tools">
+        <button class="q-button" type="button" data-match>Match coil rate</button>
+        <button class="q-button" type="button" data-reset>Reset</button>
+        <label class="q-check"><input type="checkbox" data-linear> Show linear air</label>
+        <span class="q-rate" data-rate>Air tangent rate 11.60 kN/m</span>
+      </div>
+
+      <div class="q-stage">
+        <div class="q-motion">
+          <h3>Quarter-car motion</h3>
+          <canvas data-motion role="img" aria-label="Animated comparison of two quarter-car models. Body, wheel, and road motion are drawn to an exaggerated scale."></canvas>
+          <div class="q-motion-readings" aria-label="Current body displacement">
+            <span>Coil <strong data-reading="coil">0.0 mm</strong></span>
+            <span>Air <strong data-reading="air">0.0 mm</strong></span>
+          </div>
+          <p class="q-note">Body displacement. Motion is exaggerated.</p>
+        </div>
+        <div class="q-trace">
+          <div class="q-trace-tools">
+            <label for="q-signal">Plot
+              <select id="q-signal" data-signal>
+                <option value="body">Body displacement</option>
+                <option value="acceleration">Body acceleration</option>
+                <option value="compression">Suspension compression</option>
+                <option value="tireLoad">Total tire load</option>
+              </select>
+            </label>
+            <label for="q-horizon">Window
+              <select id="q-horizon" data-horizon>
+                <option value="1">1 s</option><option value="3.5" selected>3.5 s</option><option value="6">6 s</option>
+              </select>
+            </label>
+          </div>
+          <canvas data-plot role="img" aria-label="Time series of coil and air suspension response."></canvas>
+          <div class="q-legend" aria-label="Plot legend">
+            <span class="q-key q-coil">Coil</span><span class="q-key q-air">Air</span>
+            <span class="q-key q-tangent" data-linear-key hidden>Linear air</span>
+            <span class="q-key q-road" data-road-key>Road input</span>
+          </div>
+        </div>
+      </div>
+      <div class="q-timeline">
+        <button class="q-button q-primary" type="button" data-play>Play</button>
+        <label for="q-time">Playback time</label>
+        <input type="range" id="q-time" data-time min="0" max="3.5" value="0" step="0.001">
+        <output for="q-time" data-clock>0.00 s</output>
+        <button class="q-button" type="button" data-export>Download trace CSV</button>
+      </div>
+      <p class="q-contact" role="status" data-contact></p>
+      <table class="q-metrics" aria-label="Comparison for the current bump over the full simulation">
+        <thead><tr><th scope="col">Full-run metric</th><th scope="col">Coil</th><th scope="col">Air</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Peak body displacement</th><td data-coil="bodyPeak">28.50 mm</td><td data-air="bodyPeak">26.08 mm</td></tr>
+          <tr><th scope="row">Peak body acceleration</th><td data-coil="accelPeak">4.90 m/s²</td><td data-air="accelPeak">4.61 m/s²</td></tr>
+          <tr><th scope="row">RMS body acceleration</th><td data-coil="accelRMS">1.113 m/s²</td><td data-air="accelRMS">1.009 m/s²</td></tr>
+          <tr><th scope="row">Peak suspension travel</th><td data-coil="travel">49.89 mm</td><td data-air="travel">51.16 mm</td></tr>
+          <tr><th scope="row">Minimum total tire load</th><td data-coil="minLoad">1.116 kN</td><td data-air="minLoad">0.965 kN</td></tr>
+          <tr><th scope="row">Settling after bump exit</th><td data-coil="settling">2.80 s</td><td data-air="settling">2.38 s</td></tr>
+        </tbody>
+      </table>
+      <p class="q-note">RMS uses the first 2 s. Settling counts from bump exit to the last entry into a band of ±2% of peak body displacement.</p>
+    </div>
+  </section>
+
+  <section class="q-section" id="model">
+    <div class="q-section-title"><h2>Two masses, two springs</h2><p>The body moves on the suspension and the wheel moves on the tire. That second motion makes it possible to compare tire contact as well as body comfort.</p></div>
+    <div class="q-columns">
+      <div>
+        <h3>Coil and damper</h3>
+        <p>The body is 300 kg, the wheel assembly is 60 kg, and the tire stiffness is 190 kN/m. The coil rate is 16 kN/m. Baseline damping is 1,000 N·s/m.</p>
+        <p>All displacements are measured from static ride height. Suspension compression <em>q</em> is wheel displacement minus body displacement. The suspension force <em>F</em> acts upward on the body and downward on the wheel.</p>
+        <div class="q-formula" aria-label="Body and wheel equations of motion">
+          <span><i>m</i><sub>s</sub> z̈<sub>s</sub> = <i>F</i></span>
+          <span><i>m</i><sub>u</sub> z̈<sub>u</sub> = <i>k</i><sub>t</sub>(<i>r</i> − <i>z</i><sub>u</sub>) − <i>F</i></span>
+        </div>
+      </div>
+      <figure class="q-figure"><img loading="lazy" src="{{ car }}/schematic.webp" width="1666" height="698" alt="Body and wheel masses linked by a spring and damper. The tire spring connects the wheel and road.">
+        <figcaption>Quarter-car model with upward displacements and a road height input.</figcaption>
+      </figure>
+    </div>
+    <div class="q-columns q-model-air">
+      <figure class="q-figure"><img loading="lazy" src="{{ car }}/spring-forces.webp" width="1666" height="651" alt="Force versus compression for the coil spring, nonlinear air spring, and its ride-height tangent.">
+        <figcaption>The slope of the air spring increases as the chamber compresses.</figcaption>
+      </figure>
+      <div>
+        <h3>Sealed air spring</h3>
+        <p>Compression shrinks the chamber volume and raises its absolute pressure. Static lift balances body weight. The gas force used in the simulation is the increase from that equilibrium lift.</p>
+        <div class="q-formula" aria-label="Air spring volume and tangent stiffness">
+          <span><i>V</i> = <i>V</i><sub>0</sub> − <i>A</i><sub>e</sub><i>q</i></span>
+          <span><i>k</i><sub>air</sub> = <i>n p</i><sub>0</sub><i>A</i><sub>e</sub><sup>2</sup> / <i>V</i><sub>0</sub></span>
+        </div>
+        <p>At 7.5 L with a 0.015 m² effective area and polytropic exponent of 1.30, the tangent rate is 11.60 kN/m. Increasing volume lowers the rate at the same static load.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="q-section" id="results">
+    <div class="q-section-title"><h2>What the models predict</h2></div>
+    <div class="q-columns">
+      <div class="q-result-notes">
+        <h3>The 50 mm bump</h3>
+        <p>At 0.20 s crossing time, the nonlinear air case lowers RMS body acceleration from 1.113 to 1.009 m/s². It takes 2.38 s to settle after the bump compared with 2.80 s for the coil. Air uses 1.27 mm more suspension travel and its minimum tire load is lower.</p>
+        <h3>Frequency changes the ranking</h3>
+        <p>On a 5 mm sinusoidal road, the linear air model has slightly more body motion at 0.9 Hz and less at 1.1 Hz. Both models have a wheel-hop mode near 9 Hz, where tire load can vary by about 3 kN while the body moves only about 1 mm.</p>
+        <h3>Match the rates</h3>
+        <p>At 5.439 L the air tangent and coil both have a rate of 16 kN/m. The linear traces then coincide. At that volume the nonlinear air spring predicts more body motion on the same bump than the coil, 31.23 mm versus 28.50 mm.</p>
+      </div>
+      <figure class="q-figure"><img loading="lazy" src="{{ car }}/frequency.webp" width="1666" height="918" alt="Magnitude and phase of the body-to-road transfer function. The first magnitude peak shifts from 1.09 Hz with the coil to 0.92 Hz with linearized air.">
+        <figcaption>Small-signal Bode response. The coil’s first peak is 8.85 dB and the linear air peak is 7.45 dB.</figcaption>
+      </figure>
+    </div>
+    <p class="q-limit"><strong>Model limits.</strong> The comparison represents vertical motion of one corner with idealized springs and a linear damper. The air chamber stays sealed during the bump. A calculated tire load at or below zero flags a loss of continuous contact and invalidates the model for that part of the run.</p>
+  </section>
+
+  <section class="q-section" id="reproduce">
+    <div class="q-section-title"><h2>Reproduce the study</h2></div>
+    <p>Both simulations integrate the same four mechanical states with fourth-order Runge–Kutta at 0.5 ms steps. The bump has a raised-cosine profile. The independent Python implementation can export the full time history.</p>
+    <a class="q-button" href="{{ car }}/qcar.py" download>Download Python model</a>
+    <pre><code>python qcar.py --model air --csv air.csv</code></pre>
+    <ul class="q-sources">
+      <li>Vehicle parameters and quarter-car setup. <a href="https://www.mathworks.com/help/robust/gs/active-suspension-control-design.html">MathWorks quarter-car example</a></li>
+      <li>Air pressure, effective area, and spring rate. <a href="https://www.firestoneairide.com/content/dam/fsip/airide/off-highway/pdfs/firestoneip-off-highway-rail-Airail.pdf">Firestone Airail engineering manual, pp. 17–19</a></li>
+    </ul>
+    <p class="q-note">Simulation and visualization from a three-person MAE 3260 group study. AI assisted with the analysis, figures, and interactive implementation.</p>
+  </section>
+</article>
+<script type="module" src="{{ car }}/demo.js"></script>
